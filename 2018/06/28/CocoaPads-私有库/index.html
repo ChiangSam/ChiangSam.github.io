@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 4.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yoursite.com","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="私有库创建步骤1. 建立自己的Git仓库，作为自己的索引库，将索引库添加到 pod repo 中这里以自己的服务器部署Gitlab作为私有库管理。Gitlab部署Gitlab CentOS 部署GitLab 安装包官网地址Gitlab部署完毕后，创建类似Github的索引仓库，这里命名 gitlab-specs">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CocoaPads 私有库">
+<meta property="og:url" content="http://yoursite.com/2018/06/28/CocoaPads-%E7%A7%81%E6%9C%89%E5%BA%93/index.html">
+<meta property="og:site_name" content="SamChiang">
+<meta property="og:description" content="私有库创建步骤1. 建立自己的Git仓库，作为自己的索引库，将索引库添加到 pod repo 中这里以自己的服务器部署Gitlab作为私有库管理。Gitlab部署Gitlab CentOS 部署GitLab 安装包官网地址Gitlab部署完毕后，创建类似Github的索引仓库，这里命名 gitlab-specs">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="evernotecid://FAB9C1D8-5FCF-43CA-B7A7-DDB60985EF1E/appyinxiangcom/11846644/ENResource/p44">
+<meta property="article:published_time" content="2018-06-28T12:45:06.000Z">
+<meta property="article:modified_time" content="2018-09-12T12:45:06.000Z">
+<meta property="article:author" content="SamChiang">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="evernotecid://FAB9C1D8-5FCF-43CA-B7A7-DDB60985EF1E/appyinxiangcom/11846644/ENResource/p44">
+
+<link rel="canonical" href="http://yoursite.com/2018/06/28/CocoaPads-%E7%A7%81%E6%9C%89%E5%BA%93/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>CocoaPads 私有库 | SamChiang</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">SamChiang</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/06/28/CocoaPads-%E7%A7%81%E6%9C%89%E5%BA%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/%E5%A4%B4%E5%83%8F.png">
+      <meta itemprop="name" content="SamChiang">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="SamChiang">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          CocoaPads 私有库
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-06-28 20:45:06" itemprop="dateCreated datePublished" datetime="2018-06-28T20:45:06+08:00">2018-06-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2018-09-12 20:45:06" itemprop="dateModified" datetime="2018-09-12T20:45:06+08:00">2018-09-12</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/iOS/" itemprop="url" rel="index"><span itemprop="name">iOS</span></a>
+                </span>
+            </span>
+
+          <br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>2.1k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>2 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="私有库创建步骤"><a href="#私有库创建步骤" class="headerlink" title="私有库创建步骤"></a>私有库创建步骤</h3><h5 id="1-建立自己的Git仓库，作为自己的索引库，将索引库添加到-pod-repo-中"><a href="#1-建立自己的Git仓库，作为自己的索引库，将索引库添加到-pod-repo-中" class="headerlink" title="1. 建立自己的Git仓库，作为自己的索引库，将索引库添加到 pod repo 中"></a>1. 建立自己的Git仓库，作为自己的索引库，将索引库添加到 pod repo 中</h5><p>这里以自己的服务器部署Gitlab作为私有库管理。Gitlab部署<br><a href="https://ken.io/note/centos7-gitlab-install-tutorial" target="_blank" rel="noopener">Gitlab CentOS 部署</a><br><a href="https://packages.gitlab.com/gitlab/gitlab-ce/packages/el/7/gitlab-ce-12.0.1-ce.0.el7.x86_64.rpm" target="_blank" rel="noopener">GitLab 安装包官网地址</a><br>Gitlab部署完毕后，创建类似Github的索引仓库，这里命名 gitlab-specs</p>
+<a id="more"></a>
+
+<p>将gitlab上的索引库 添加到本地</p>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pod repo add [索引库在本地的名字] [索引库在远程服务器的地址]</span><br><span class="line">&#x2F;&#x2F; 这里用gitlab-specs本地名字为例</span><br><span class="line">pod repo add gitlab-specs http:&#x2F;&#x2F;samchiang.com&#x2F;samchiang&#x2F;gitlabSpecs.git</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>这样可以再 ~/.cocoapods/repos 目录下看到 gitlab-specs 仓库</p>
+<hr>
+<h5 id="2-创建Pod项目"><a href="#2-创建Pod项目" class="headerlink" title="2. 创建Pod项目"></a>2. 创建Pod项目</h5><p>用下面的命令创建 pod项目，这里创建个Util 组件库</p>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">pod lib create 【pod库的项目名称】</span><br><span class="line">&#x2F;&#x2F;例如</span><br><span class="line">pod lib create SCUtil</span><br></pre></td></tr></table></figure>
+</blockquote>
+<hr>
+<h5 id="3-修改Pod项目"><a href="#3-修改Pod项目" class="headerlink" title="3. 修改Pod项目"></a>3. 修改Pod项目</h5><p>可以用Exmaple 编写的pod 库，编写完成后进入第4步</p>
+<hr>
+<h5 id="4-修改-podspec文件，并验证"><a href="#4-修改-podspec文件，并验证" class="headerlink" title="4. 修改*.podspec文件，并验证"></a>4. 修改*.podspec文件，并验证</h5><ul>
+<li><h4 id="如何编写你的-podspec"><a href="#如何编写你的-podspec" class="headerlink" title="如何编写你的.podspec"></a>如何编写你的.podspec</h4><p>  一些常用信息介绍</p>
+<blockquote>
+<p>name：框架名<br>  version：当前版本（注意，是当前版本，假如你后续更新了新版本，需要修改此处）<br>  summary：简要描述，在pod search ZCPKit的时候会显示该信息。<br>  description：详细描述<br>  homepage：页面链接<br>  license：开源协议<br>  author：作者<br>  source：源码git地址<br>  platform：支持最低ios版本<br>  source_files：源文件（可以包含.h和.m）<br>  public_header_files：头文件(.h文件)<br>  resources：资源文件（配置的文件都会被放到mainBundle中）<br>  resource_bundles：资源文件（配置的文件会放到你自己指定的bundle中）<br>  frameworks：依赖的系统框架<br>  vendored_frameworks：依赖的非系统框架<br>  libraries：依赖的系统库<br>  vendored_libraries：依赖的非系统的静态库<br>  dependency：依赖的三方库</p>
+</blockquote>
+</li>
+<li><h4 id="如何实现目录分层"><a href="#如何实现目录分层" class="headerlink" title="如何实现目录分层"></a>如何实现目录分层</h4><p><img src="evernotecid://FAB9C1D8-5FCF-43CA-B7A7-DDB60985EF1E/appyinxiangcom/11846644/ENResource/p44" alt="53082e9beb54d5ec64abacc21f5502c6.png"></p>
+</li>
+</ul>
+<p>Pod目录结构</p>
+<blockquote>
+<p>SCUtil<br>    |<strong>__ ValidUtil<br>    |__</strong> CropUtil</p>
+</blockquote>
+<p>使用 subspec</p>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; subspecs 配置  &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">s.subspece &#39;validUtil&#39; do |ss|</span><br><span class="line">     #目录为文件根目录下第一路由</span><br><span class="line">     ss.source_files &#x3D; &#39;ValidUtil&#x2F;*&#39; </span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">s.subspec &#39;CropUtil&#39; do |ss|</span><br><span class="line">   ss.source_files &#x3D; &#39;CropUtil&#x2F;*&#39;</span><br><span class="line">   #如果有依赖项添加依赖项,这里假设 CropUtil依赖 ValidUtil</span><br><span class="line">   ss.dependency &#39;SCUtil&#x2F;ValidUtil&#39;</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>其他依赖项和主项目的配置方式是一致的</p>
+<p><a href="https://segmentfault.com/a/1190000012269307" target="_blank" rel="noopener">参考podspec配置文章</a><br><a href="http://www.mengyueping.com/2018/08/16/iOS_CocoaPods_03/" target="_blank" rel="noopener">参考podspec可能错误的文章</a></p>
+<ul>
+<li><h4 id="验证podspec编写是否无误"><a href="#验证podspec编写是否无误" class="headerlink" title="验证podspec编写是否无误"></a>验证podspec编写是否无误</h4></li>
+</ul>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod lib lint</span><br></pre></td></tr></table></figure>
+</blockquote>
+<hr>
+<h5 id="5-建立pod-Git库，将Pod项目代码提交，并添加标签"><a href="#5-建立pod-Git库，将Pod项目代码提交，并添加标签" class="headerlink" title="5. 建立pod Git库，将Pod项目代码提交，并添加标签"></a>5. 建立pod Git库，将Pod项目代码提交，并添加标签</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">1.git add .</span><br><span class="line">2.git commit -m &quot;提交版本描述&quot;</span><br><span class="line">3.git remote add origin 项目仓库地址 &#x2F;&#x2F; 注意，这不是Spec Repo私有库的仓库地址！！是pod 私有库的远程地址</span><br><span class="line">4.git push origin master</span><br><span class="line">5.git tag -m &quot;标签描述&quot; 标签名</span><br><span class="line">6.git push --tags</span><br></pre></td></tr></table></figure>
+
+<h5 id="6-将-pod库-索引添加到自己的索引库"><a href="#6-将-pod库-索引添加到自己的索引库" class="headerlink" title="6. 将 pod库 索引添加到自己的索引库"></a>6. 将 pod库 索引添加到自己的索引库</h5><p>这里 本地索引库以 gitlab-specs 为例 ,自己的pod私有库以 SCUtil为例</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod repo push gitlab-specs SCUtil.podspec</span><br></pre></td></tr></table></figure>
+
+
+<h5 id="7-测试"><a href="#7-测试" class="headerlink" title="7. 测试"></a>7. 测试</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;创建自己的项目，添加podfile</span><br><span class="line">pod init </span><br><span class="line">&#x2F;&#x2F;或者cd到自己pod私有库文件地址，用vim编写也可以 vim podfile </span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;添加Pod私有索引库</span><br><span class="line">source http:&#x2F;&#x2F;samchiang.com&#x2F;samchiang&#x2F;gitlabSpecs.git &#x2F;&#x2F;索引库地址</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;添加自己的私有库</span><br><span class="line">pod &#39;SCUtil&#39;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;最后执行pod install</span><br><span class="line">pod install</span><br></pre></td></tr></table></figure>
+    </div>
+    
+    
+    
+      
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/04/19/%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="prev" title="多线程">
+      <i class="fa fa-chevron-left"></i> 多线程
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#私有库创建步骤"><span class="nav-number">1.</span> <span class="nav-text">私有库创建步骤</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-建立自己的Git仓库，作为自己的索引库，将索引库添加到-pod-repo-中"><span class="nav-number">1.0.1.</span> <span class="nav-text">1. 建立自己的Git仓库，作为自己的索引库，将索引库添加到 pod repo 中</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-创建Pod项目"><span class="nav-number">1.0.2.</span> <span class="nav-text">2. 创建Pod项目</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-修改Pod项目"><span class="nav-number">1.0.3.</span> <span class="nav-text">3. 修改Pod项目</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-修改-podspec文件，并验证"><span class="nav-number">1.0.4.</span> <span class="nav-text">4. 修改*.podspec文件，并验证</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#如何编写你的-podspec"><span class="nav-number">1.1.</span> <span class="nav-text">如何编写你的.podspec</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#如何实现目录分层"><span class="nav-number">1.2.</span> <span class="nav-text">如何实现目录分层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#验证podspec编写是否无误"><span class="nav-number">1.3.</span> <span class="nav-text">验证podspec编写是否无误</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#5-建立pod-Git库，将Pod项目代码提交，并添加标签"><span class="nav-number">1.3.1.</span> <span class="nav-text">5. 建立pod Git库，将Pod项目代码提交，并添加标签</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-将-pod库-索引添加到自己的索引库"><span class="nav-number">1.3.2.</span> <span class="nav-text">6. 将 pod库 索引添加到自己的索引库</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#7-测试"><span class="nav-number">1.3.3.</span> <span class="nav-text">7. 测试</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="SamChiang"
+      src="/images/%E5%A4%B4%E5%83%8F.png">
+  <p class="site-author-name" itemprop="name">SamChiang</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">[object Object]</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+    <span title="站点总字数">2k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+    <span title="站点阅读时长">2 分钟</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '5229b624ea3086720dc4',
+      clientSecret: '0c5c59024b1a0e04406dc3a8cb405d6db3fbb805',
+      repo        : 'BlogComments',
+      owner       : 'ChiangSam',
+      admin       : ['ChiangSam'],
+      id          : '3ca4994419d27544514677cb806e17ad',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>

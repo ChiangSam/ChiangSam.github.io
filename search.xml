@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>CocoaPads 私有库</title>
+    <url>/2018/06/28/CocoaPads-%E7%A7%81%E6%9C%89%E5%BA%93/</url>
+    <content><![CDATA[<h3 id="私有库创建步骤"><a href="#私有库创建步骤" class="headerlink" title="私有库创建步骤"></a>私有库创建步骤</h3><h5 id="1-建立自己的Git仓库，作为自己的索引库，将索引库添加到-pod-repo-中"><a href="#1-建立自己的Git仓库，作为自己的索引库，将索引库添加到-pod-repo-中" class="headerlink" title="1. 建立自己的Git仓库，作为自己的索引库，将索引库添加到 pod repo 中"></a>1. 建立自己的Git仓库，作为自己的索引库，将索引库添加到 pod repo 中</h5><p>这里以自己的服务器部署Gitlab作为私有库管理。Gitlab部署<br><a href="https://ken.io/note/centos7-gitlab-install-tutorial" target="_blank" rel="noopener">Gitlab CentOS 部署</a><br><a href="https://packages.gitlab.com/gitlab/gitlab-ce/packages/el/7/gitlab-ce-12.0.1-ce.0.el7.x86_64.rpm" target="_blank" rel="noopener">GitLab 安装包官网地址</a><br>Gitlab部署完毕后，创建类似Github的索引仓库，这里命名 gitlab-specs</p>
+<a id="more"></a>
+
+<p>将gitlab上的索引库 添加到本地</p>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pod repo add [索引库在本地的名字] [索引库在远程服务器的地址]</span><br><span class="line">&#x2F;&#x2F; 这里用gitlab-specs本地名字为例</span><br><span class="line">pod repo add gitlab-specs http:&#x2F;&#x2F;samchiang.com&#x2F;samchiang&#x2F;gitlabSpecs.git</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>这样可以再 ~/.cocoapods/repos 目录下看到 gitlab-specs 仓库</p>
+<hr>
+<h5 id="2-创建Pod项目"><a href="#2-创建Pod项目" class="headerlink" title="2. 创建Pod项目"></a>2. 创建Pod项目</h5><p>用下面的命令创建 pod项目，这里创建个Util 组件库</p>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pod lib create 【pod库的项目名称】</span><br><span class="line">&#x2F;&#x2F;例如</span><br><span class="line">pod lib create SCUtil</span><br></pre></td></tr></table></figure>
+</blockquote>
+<hr>
+<h5 id="3-修改Pod项目"><a href="#3-修改Pod项目" class="headerlink" title="3. 修改Pod项目"></a>3. 修改Pod项目</h5><p>可以用Exmaple 编写的pod 库，编写完成后进入第4步</p>
+<hr>
+<h5 id="4-修改-podspec文件，并验证"><a href="#4-修改-podspec文件，并验证" class="headerlink" title="4. 修改*.podspec文件，并验证"></a>4. 修改*.podspec文件，并验证</h5><ul>
+<li><h4 id="如何编写你的-podspec"><a href="#如何编写你的-podspec" class="headerlink" title="如何编写你的.podspec"></a>如何编写你的.podspec</h4><p>  一些常用信息介绍</p>
+<blockquote>
+<p>name：框架名<br>  version：当前版本（注意，是当前版本，假如你后续更新了新版本，需要修改此处）<br>  summary：简要描述，在pod search ZCPKit的时候会显示该信息。<br>  description：详细描述<br>  homepage：页面链接<br>  license：开源协议<br>  author：作者<br>  source：源码git地址<br>  platform：支持最低ios版本<br>  source_files：源文件（可以包含.h和.m）<br>  public_header_files：头文件(.h文件)<br>  resources：资源文件（配置的文件都会被放到mainBundle中）<br>  resource_bundles：资源文件（配置的文件会放到你自己指定的bundle中）<br>  frameworks：依赖的系统框架<br>  vendored_frameworks：依赖的非系统框架<br>  libraries：依赖的系统库<br>  vendored_libraries：依赖的非系统的静态库<br>  dependency：依赖的三方库</p>
+</blockquote>
+</li>
+<li><h4 id="如何实现目录分层"><a href="#如何实现目录分层" class="headerlink" title="如何实现目录分层"></a>如何实现目录分层</h4><p><img src="evernotecid://FAB9C1D8-5FCF-43CA-B7A7-DDB60985EF1E/appyinxiangcom/11846644/ENResource/p44" alt="53082e9beb54d5ec64abacc21f5502c6.png"></p>
+</li>
+</ul>
+<p>Pod目录结构</p>
+<blockquote>
+<p>SCUtil<br>    |<strong>__ ValidUtil<br>    |__</strong> CropUtil</p>
+</blockquote>
+<p>使用 subspec</p>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; subspecs 配置  &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">s.subspece &#39;validUtil&#39; do |ss|</span><br><span class="line">     #目录为文件根目录下第一路由</span><br><span class="line">     ss.source_files &#x3D; &#39;ValidUtil&#x2F;*&#39; </span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">s.subspec &#39;CropUtil&#39; do |ss|</span><br><span class="line">   ss.source_files &#x3D; &#39;CropUtil&#x2F;*&#39;</span><br><span class="line">   #如果有依赖项添加依赖项,这里假设 CropUtil依赖 ValidUtil</span><br><span class="line">   ss.dependency &#39;SCUtil&#x2F;ValidUtil&#39;</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>其他依赖项和主项目的配置方式是一致的</p>
+<p><a href="https://segmentfault.com/a/1190000012269307" target="_blank" rel="noopener">参考podspec配置文章</a><br><a href="http://www.mengyueping.com/2018/08/16/iOS_CocoaPods_03/" target="_blank" rel="noopener">参考podspec可能错误的文章</a></p>
+<ul>
+<li><h4 id="验证podspec编写是否无误"><a href="#验证podspec编写是否无误" class="headerlink" title="验证podspec编写是否无误"></a>验证podspec编写是否无误</h4></li>
+</ul>
+<blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pod lib lint</span><br></pre></td></tr></table></figure>
+</blockquote>
+<hr>
+<h5 id="5-建立pod-Git库，将Pod项目代码提交，并添加标签"><a href="#5-建立pod-Git库，将Pod项目代码提交，并添加标签" class="headerlink" title="5. 建立pod Git库，将Pod项目代码提交，并添加标签"></a>5. 建立pod Git库，将Pod项目代码提交，并添加标签</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1.git add .</span><br><span class="line">2.git commit -m &quot;提交版本描述&quot;</span><br><span class="line">3.git remote add origin 项目仓库地址 &#x2F;&#x2F; 注意，这不是Spec Repo私有库的仓库地址！！是pod 私有库的远程地址</span><br><span class="line">4.git push origin master</span><br><span class="line">5.git tag -m &quot;标签描述&quot; 标签名</span><br><span class="line">6.git push --tags</span><br></pre></td></tr></table></figure>
+
+<h5 id="6-将-pod库-索引添加到自己的索引库"><a href="#6-将-pod库-索引添加到自己的索引库" class="headerlink" title="6. 将 pod库 索引添加到自己的索引库"></a>6. 将 pod库 索引添加到自己的索引库</h5><p>这里 本地索引库以 gitlab-specs 为例 ,自己的pod私有库以 SCUtil为例</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pod repo push gitlab-specs SCUtil.podspec</span><br></pre></td></tr></table></figure>
+
+
+<h5 id="7-测试"><a href="#7-测试" class="headerlink" title="7. 测试"></a>7. 测试</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F;创建自己的项目，添加podfile</span><br><span class="line">pod init </span><br><span class="line">&#x2F;&#x2F;或者cd到自己pod私有库文件地址，用vim编写也可以 vim podfile </span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;添加Pod私有索引库</span><br><span class="line">source http:&#x2F;&#x2F;samchiang.com&#x2F;samchiang&#x2F;gitlabSpecs.git &#x2F;&#x2F;索引库地址</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;添加自己的私有库</span><br><span class="line">pod &#39;SCUtil&#39;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;最后执行pod install</span><br><span class="line">pod install</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>iOS</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>多线程</title>
+    <url>/2018/04/19/%E5%A4%9A%E7%BA%BF%E7%A8%8B/</url>
+    <content><![CDATA[<h2 id="进程、线程"><a href="#进程、线程" class="headerlink" title="进程、线程"></a>进程、线程</h2><h3 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h3><ul>
+<li>进程是一个具有一定独立功能的程序关于某次数据集合的一次运行活动，它是操作系统分配资源的基本单位；</li>
+<li>进程是指在系统中正在运行的一个应用程序，就是一段程序的执行过程，我们可以理解成手机里的一个App；</li>
+<li>每个进程之间都是独立的，每个进程运行在其专用且受保护的内存空间内，拥有独立运行所需的全部资源；</li>
+</ul>
+<a id="more"></a>
+
+<h3 id="线程"><a href="#线程" class="headerlink" title="线程"></a>线程</h3><ul>
+<li>程序执行流的最小单元，线程是进程中的一个实体；</li>
+<li>一个进程想要执行任务，必须至少有一条线程，应用程序启动的时候，系统会默认开启一条线程，也就是主线程；</li>
+</ul>
+<h3 id="进程和线程的关系"><a href="#进程和线程的关系" class="headerlink" title="进程和线程的关系"></a>进程和线程的关系</h3><ul>
+<li>线程是进程的执行单元，进程的所有任务都在线程中执行；</li>
+<li>线程是CPU分配和调度资源的最小单位；</li>
+<li>一个程序可以对应多个进程(多进程)，一个进程可以对应多个线程，但至少要有个线程；</li>
+<li>同个进程内的线程共享进程资源；</li>
+</ul>
+]]></content>
+      <categories>
+        <category>iOS</category>
+      </categories>
+  </entry>
+</search>
