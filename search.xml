@@ -8,13 +8,13 @@
 
 <p>将gitlab上的索引库 添加到本地</p>
 <blockquote>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pod repo add [索引库在本地的名字] [索引库在远程服务器的地址]</span><br><span class="line">&#x2F;&#x2F; 这里用gitlab-specs本地名字为例</span><br><span class="line">pod repo add gitlab-specs http:&#x2F;&#x2F;samchiang.com&#x2F;samchiang&#x2F;gitlabSpecs.git</span><br></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">pod repo add [索引库在本地的名字] [索引库在远程服务器的地址]</span><br><span class="line"><span class="comment"># 这里用gitlab-specs本地名字为例</span></span><br><span class="line">pod repo add gitlab-specs <span class="symbol">http:</span>/<span class="regexp">/samchiang.com/samchiang</span><span class="regexp">/gitlabSpecs.git</span></span><br></pre></td></tr></table></figure>
 </blockquote>
 <p>这样可以再 ~/.cocoapods/repos 目录下看到 gitlab-specs 仓库</p>
 <hr>
 <h5 id="2-创建Pod项目"><a href="#2-创建Pod项目" class="headerlink" title="2. 创建Pod项目"></a>2. 创建Pod项目</h5><p>用下面的命令创建 pod项目，这里创建个Util 组件库</p>
 <blockquote>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pod lib create 【pod库的项目名称】</span><br><span class="line">&#x2F;&#x2F;例如</span><br><span class="line">pod lib create SCUtil</span><br></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">pod lib create 【pod库的项目名称】</span><br><span class="line"><span class="comment"># 例如</span></span><br><span class="line">pod lib create SCUtil</span><br></pre></td></tr></table></figure>
 </blockquote>
 <hr>
 <h5 id="3-修改Pod项目"><a href="#3-修改Pod项目" class="headerlink" title="3. 修改Pod项目"></a>3. 修改Pod项目</h5><p>可以用Exmaple 编写的pod 库，编写完成后进入第4步</p>
@@ -25,7 +25,7 @@
 <p>name：框架名<br>  version：当前版本（注意，是当前版本，假如你后续更新了新版本，需要修改此处）<br>  summary：简要描述，在pod search ZCPKit的时候会显示该信息。<br>  description：详细描述<br>  homepage：页面链接<br>  license：开源协议<br>  author：作者<br>  source：源码git地址<br>  platform：支持最低ios版本<br>  source_files：源文件（可以包含.h和.m）<br>  public_header_files：头文件(.h文件)<br>  resources：资源文件（配置的文件都会被放到mainBundle中）<br>  resource_bundles：资源文件（配置的文件会放到你自己指定的bundle中）<br>  frameworks：依赖的系统框架<br>  vendored_frameworks：依赖的非系统框架<br>  libraries：依赖的系统库<br>  vendored_libraries：依赖的非系统的静态库<br>  dependency：依赖的三方库</p>
 </blockquote>
 </li>
-<li><h4 id="如何实现目录分层"><a href="#如何实现目录分层" class="headerlink" title="如何实现目录分层"></a>如何实现目录分层</h4><p><img src="evernotecid://FAB9C1D8-5FCF-43CA-B7A7-DDB60985EF1E/appyinxiangcom/11846644/ENResource/p44" alt="53082e9beb54d5ec64abacc21f5502c6.png"></p>
+<li><h4 id="如何实现目录分层"><a href="#如何实现目录分层" class="headerlink" title="如何实现目录分层"></a>如何实现目录分层</h4><p><img src="https://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/WeChat5e07f88b10d442daffce258ac9f8ec8e.png?Expires=1587446709&OSSAccessKeyId=TMP.3KkBREs12Zb6eLL52aC9ESyqTnNw7d8X77WbuieTddGJ32n2Z1HoQd6Vz8TWujDsNsAwN4jq16kzhTLtrfM9qyBnRiyFSM&Signature=xKNPmz8WQPJ647KMUvSjKxfaRss%3D" alt="53082e9beb54d5ec64abacc21f5502c6.png"></p>
 </li>
 </ul>
 <p>Pod目录结构</p>
@@ -34,7 +34,7 @@
 </blockquote>
 <p>使用 subspec</p>
 <blockquote>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D; subspecs 配置  &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">s.subspece &#39;validUtil&#39; do |ss|</span><br><span class="line">     #目录为文件根目录下第一路由</span><br><span class="line">     ss.source_files &#x3D; &#39;ValidUtil&#x2F;*&#39; </span><br><span class="line">end</span><br><span class="line"></span><br><span class="line">s.subspec &#39;CropUtil&#39; do |ss|</span><br><span class="line">   ss.source_files &#x3D; &#39;CropUtil&#x2F;*&#39;</span><br><span class="line">   #如果有依赖项添加依赖项,这里假设 CropUtil依赖 ValidUtil</span><br><span class="line">   ss.dependency &#39;SCUtil&#x2F;ValidUtil&#39;</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">=========== subspecs 配置  ===========</span><br><span class="line">s.subspece <span class="string">'validUtil'</span> <span class="keyword">do</span> <span class="params">|ss|</span></span><br><span class="line">     <span class="comment">#目录为文件根目录下第一路由</span></span><br><span class="line">     ss.source_files = <span class="string">'ValidUtil/*'</span> </span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">s.subspec <span class="string">'CropUtil'</span> <span class="keyword">do</span> <span class="params">|ss|</span></span><br><span class="line">   ss.source_files = <span class="string">'CropUtil/*'</span></span><br><span class="line">   <span class="comment">#如果有依赖项添加依赖项,这里假设 CropUtil依赖 ValidUtil</span></span><br><span class="line">   ss.dependency <span class="string">'SCUtil/ValidUtil'</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
 </blockquote>
 <p>其他依赖项和主项目的配置方式是一致的</p>
 <p><a href="https://segmentfault.com/a/1190000012269307" target="_blank" rel="noopener">参考podspec配置文章</a><br><a href="http://www.mengyueping.com/2018/08/16/iOS_CocoaPods_03/" target="_blank" rel="noopener">参考podspec可能错误的文章</a></p>
@@ -42,16 +42,16 @@
 <li><h4 id="验证podspec编写是否无误"><a href="#验证podspec编写是否无误" class="headerlink" title="验证podspec编写是否无误"></a>验证podspec编写是否无误</h4></li>
 </ul>
 <blockquote>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pod lib lint</span><br></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">pod lib lint</span><br></pre></td></tr></table></figure>
 </blockquote>
 <hr>
-<h5 id="5-建立pod-Git库，将Pod项目代码提交，并添加标签"><a href="#5-建立pod-Git库，将Pod项目代码提交，并添加标签" class="headerlink" title="5. 建立pod Git库，将Pod项目代码提交，并添加标签"></a>5. 建立pod Git库，将Pod项目代码提交，并添加标签</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1.git add .</span><br><span class="line">2.git commit -m &quot;提交版本描述&quot;</span><br><span class="line">3.git remote add origin 项目仓库地址 &#x2F;&#x2F; 注意，这不是Spec Repo私有库的仓库地址！！是pod 私有库的远程地址</span><br><span class="line">4.git push origin master</span><br><span class="line">5.git tag -m &quot;标签描述&quot; 标签名</span><br><span class="line">6.git push --tags</span><br></pre></td></tr></table></figure>
+<h5 id="5-建立pod-Git库，将Pod项目代码提交，并添加标签"><a href="#5-建立pod-Git库，将Pod项目代码提交，并添加标签" class="headerlink" title="5. 建立pod Git库，将Pod项目代码提交，并添加标签"></a>5. 建立pod Git库，将Pod项目代码提交，并添加标签</h5><figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">"提交版本描述"</span></span><br><span class="line">git remote add origin 项目仓库地址 <span class="comment"># 注意，这不是Spec Repo私有库的仓库地址！！是pod 私有库的远程地址</span></span><br><span class="line">git push origin master</span><br><span class="line">git tag -m <span class="string">"标签描述"</span> 标签名</span><br><span class="line">git push --tags</span><br></pre></td></tr></table></figure>
 
 <h5 id="6-将-pod库-索引添加到自己的索引库"><a href="#6-将-pod库-索引添加到自己的索引库" class="headerlink" title="6. 将 pod库 索引添加到自己的索引库"></a>6. 将 pod库 索引添加到自己的索引库</h5><p>这里 本地索引库以 gitlab-specs 为例 ,自己的pod私有库以 SCUtil为例</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">pod repo push gitlab-specs SCUtil.podspec</span><br></pre></td></tr></table></figure>
+<figure class="highlight reasonml"><table><tr><td class="code"><pre><span class="line">pod repo push gitlab-specs <span class="module-access"><span class="module"><span class="identifier">SCUtil</span>.</span></span>podspec</span><br></pre></td></tr></table></figure>
 
 
-<h5 id="7-测试"><a href="#7-测试" class="headerlink" title="7. 测试"></a>7. 测试</h5><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F;创建自己的项目，添加podfile</span><br><span class="line">pod init </span><br><span class="line">&#x2F;&#x2F;或者cd到自己pod私有库文件地址，用vim编写也可以 vim podfile </span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;添加Pod私有索引库</span><br><span class="line">source http:&#x2F;&#x2F;samchiang.com&#x2F;samchiang&#x2F;gitlabSpecs.git &#x2F;&#x2F;索引库地址</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;添加自己的私有库</span><br><span class="line">pod &#39;SCUtil&#39;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;最后执行pod install</span><br><span class="line">pod install</span><br></pre></td></tr></table></figure>]]></content>
+<h5 id="7-测试"><a href="#7-测试" class="headerlink" title="7. 测试"></a>7. 测试</h5><figure class="highlight awk"><table><tr><td class="code"><pre><span class="line"><span class="regexp">//</span>创建自己的项目，添加podfile</span><br><span class="line">pod init </span><br><span class="line"><span class="regexp">//</span>或者cd到自己pod私有库文件地址，用vim编写也可以 vim podfile </span><br><span class="line"></span><br><span class="line"><span class="regexp">//</span>添加Pod私有索引库</span><br><span class="line">source http:<span class="regexp">//</span>samchiang.com<span class="regexp">/samchiang/gi</span>tlabSpecs.git <span class="regexp">//</span>索引库地址</span><br><span class="line"></span><br><span class="line"><span class="regexp">//</span>添加自己的私有库</span><br><span class="line">pod <span class="string">'SCUtil'</span></span><br><span class="line"></span><br><span class="line"><span class="regexp">//</span>最后执行pod install</span><br><span class="line">pod install</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>iOS</category>
       </categories>
@@ -76,6 +76,117 @@
 <li>一个程序可以对应多个进程(多进程)，一个进程可以对应多个线程，但至少要有个线程；</li>
 <li>同个进程内的线程共享进程资源；</li>
 </ul>
+<h3 id="多线程"><a href="#多线程" class="headerlink" title="多线程"></a>多线程</h3><ul>
+<li>统一时间，CPU 只能处理一条线程，只有一条线程在执行，多线程并发执行，其实是 CPU 快速的在多条线程之间调度 (切换)，如果 CPU 调度线程时间足够快，就造成了多线程并发执行的假象；</li>
+<li>如果线程非常非常多，CPU 会在 N 多线程之间调度，消耗大量的 CPU 资源， 每条线程被 调度执行的频次会降低 (线程的执行效率降低)</li>
+<li>多线程的优点:<ul>
+<li>能适当提高程序的执行效率</li>
+<li>能适当提高资源利用率(CPU、内存利用率)</li>
+</ul>
+</li>
+<li>多线程的缺点:<ul>
+<li>开启线程需要占用一定的内存空间(默认情况下，主线程占用 1M，子线程占用 512KB)，如果开启大量的 线程，会占用大量的内存空间，降低程序的性能</li>
+<li>线程越多，CPU 在调度线程上的开销就越大</li>
+<li>程序设计更加复杂:比如线程之间的通信、多线程的数据共享</li>
+</ul>
+</li>
+</ul>
+<p><br><br></p>
+<h2 id="任务、队列"><a href="#任务、队列" class="headerlink" title="任务、队列"></a>任务、队列</h2><h3 id="任务"><a href="#任务" class="headerlink" title="任务"></a>任务</h3><p>就是执行操作的意思，也就是在线程中执行的那段代码。在 GCD 中是放在 block 中的。执行任务有两种 方式:同步执行(sync)和异步执行(async)</p>
+<p><strong>同步(Sync):</strong> 同步添加任务到指定的队列中，在添加的任务执行结束之前，会一直等待，直到队列里面的任 务完成之后再继续执行，即会阻塞线程。只能在当前线程中执行任务(是当前线程，不一定是主线程)，不具 备开启新线程的能力。<br><strong>异步(Async):</strong> 线程会立即返回，无需等待就会继续执行下面的任务，不阻塞当前线程。可以在新的线程中 执行任务，具备开启新线程的能力(并不一定开启新线程)。如果不是添加到主队列上，异步会在子线程中执 行任务</p>
+<h3 id="队列"><a href="#队列" class="headerlink" title="队列"></a>队列</h3><blockquote>
+<p>队列(Dispatch Queue):这里的队列指执行任务的等待队列，即用来存放任务的队列。队列是一种特殊的 线性表，采用 FIFO(先进先出)的原则，即新任务总是被插入到队列的末尾，而读取任务的时候总是从队 列的头部开始读取。每读取一个任务，则从队列中释放一个任务<br>在 GCD 中有两种队列:串行队列和并发队列。两者都符合 FIFO(先进先出)的原则。两者的主要区别是: 执行顺序不同，以及开启线程数不同</p>
+</blockquote>
+<br>
+
+<ul>
+<li>串行队列(SerialDispatchQueue):<br>同一时间内，队列中只能执行一个任务，只有当前的任务执行完成之后，才能执行下一个任务。(只 开启一个线程，一个任务执行完毕后，再执行下一个任务)。主队列是主线程上的一个串行队列,是系 统自动为我们创建的</li>
+<li>并发队列(ConcurrentDispatchQueue):<br>同时允许多个任务并发执行。(可以开启多个线程，并且同时执行任务)。并发队列的并发功能只有 在异步(dispatch_async)函数下才有效</li>
+</ul>
+<p><br><br></p>
+<h2 id="iOS-中的多线程"><a href="#iOS-中的多线程" class="headerlink" title="iOS 中的多线程"></a>iOS 中的多线程</h2><ul>
+<li>主要有三种:NSThread、NSoperationQueue、GCD</li>
+</ul>
+<blockquote>
+<p>是我们自己手动开辟的子线程，如果使用的是初始化方式就需要我们自己启动，如果使用的是构造器方式 它就会自动启动。只要是我们手动开辟的线程，都需要我们自己管理该线程，不只是启动，还有该线程使 用完毕后的资源回收</p>
+</blockquote>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">NSThread</span> *thread = [[<span class="built_in">NSThread</span> alloc] initWithTarget:<span class="keyword">self</span> selector:<span class="keyword">@selector</span>(testThread:) object:<span class="string">@"我是参数"</span> ];</span><br><span class="line"><span class="comment">// 当使用初始化方法初始出来的线程需要start启动</span></span><br><span class="line">[thread start];</span><br><span class="line"><span class="comment">// 可以为开辟的子线程起名字</span></span><br><span class="line">thread.name = <span class="string">@"NSTread线程"</span>;</span><br><span class="line"><span class="comment">//调整Thread的权限，线程权限范围0 - 1 ,越大权限越高，先执行的概率就会越高，由于是概率，所以并不能很准确的实现我们想要的执行顺序</span></span><br><span class="line">thread.threadPriority = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 通过构造器开辟子线程</span></span><br><span class="line">[<span class="built_in">NSThread</span> detachNewThreadSelector:<span class="keyword">@selector</span>(testThread:) toTarget:<span class="keyword">self</span> withObject:<span class="string">@"构造器方式"</span>];</span><br></pre></td></tr></table></figure>
+<br>
+
+<p>performSelector…只要是 NSObject 的子类或者对象都可以通过调用方法进入子线程和主线程，其实这些方法 所开辟的子线程也是 NSThread 的另一种体现方式。 在编译阶段并不会去检查方法是否有效存在，如果不存在只会给出警告；</p>
+<h3 id="GCD-对比-NSOperationQueue"><a href="#GCD-对比-NSOperationQueue" class="headerlink" title="GCD 对比 NSOperationQueue"></a>GCD 对比 NSOperationQueue</h3><p>我们要明确 <code>NSOperationQueue</code> 与 <code>GCD</code> 之间的关系<br><code>GCD</code> 是面向底层的C语言的 <code>API</code>， <code>NSOperationQueue</code> 是用 <code>GCD</code> 构建封装的， 是 <code>GCD</code> 的高级抽象。</p>
+<ul>
+<li><code>GCD</code> 执行效率更高，而且由于队列中执行的是由 <code>block</code> 构成的任务，这是一个轻量级的数据结构，写起来更方便</li>
+<li><code>GCD</code> 只支持 <code>FIFO</code> （先进先出）的队列， 而 <code>NSOperationQueue</code> 可以通过设置最大并发数，设置优先级，添加依赖关系等调整执行顺序；</li>
+<li><code>NSOperationQueue</code> 甚至可以跨队列设置依赖关系， 但是 <code>GCD</code> 只能通过设置串行队列，或者在队列内添加 <code>barrier</code> (<code>dispatch_barrier_async</code>) 任务， 才能控制执行顺序，较为复杂</li>
+<li><code>NSOperationQueue</code> 因为面向对象，所以支持 <code>KVO</code>, 可以检测 <code>Operation</code> 是否正在执行 （isExecuted）、 是否结束 (isFinished) 、 是否取消 (isCanceld);</li>
+</ul>
+<blockquote>
+<p>实际项目开发中，很多时候只会用到异步操作，不会有特别复杂的线程关系管理，所以苹果推崇且优化完善，运行快速的 <code>GCD</code> 作为首选；<br>如果考虑异步操作之间的事务性，顺序性，依赖关系，比如多线程并发下载，GCD 需要自己写更多的代码来实现， 而 <code>NSOperationQueue</code> 已经内建了这些支持<br>无论是 <code>GCD</code> 还是 <code>NSOperationQueue</code> ，我们接触的都是任务和队列，没有直接接触到线程，事实上线程管理也的确不需要我们操心，系统对于线程的创建，调度管理和释放都做的很好。而 <code>NSThread</code> 需要我们自己去管理线程的生命周期，还需要考虑线程同步，加锁问题，造成一些性能上的开销</p>
+</blockquote>
+<h3 id="GCD-–-队列"><a href="#GCD-–-队列" class="headerlink" title="GCD – 队列"></a>GCD – 队列</h3><br>
+
+<p>iOS 中有 <code>GCD</code> 、 <code>NSOperationQueue</code> 、 <code>NSThread</code> 等多线程技术方案<br>而 <code>GCD</code> 共有三种队列类型:</p>
+<ul>
+<li>main queue: 通过 dispatch_get_main_queue()获得，这是一个与主线程祥光的串行队列。</li>
+<li>global queue: 全局队列，是并发队列，由整个进程共享。存在着高、中、低三种优先级的全局队列，调用 <code>dispatch_get_global_queue</code> 并传入优先级来访问队列</li>
+<li>自定义队列： 通过函数 <code>dispatch_queue_create</code> 穿件的队列</li>
+</ul>
+<h3 id="死锁"><a href="#死锁" class="headerlink" title="死锁"></a>死锁</h3><p>概念： 死锁就是队列引起的循环等待</p>
+<p>1、 一个比较常见的死锁例子： 主队列同步操作</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)viewDidLoad &#123;</span><br><span class="line">    [<span class="keyword">super</span> viewDidLoad];</span><br><span class="line"></span><br><span class="line">    <span class="built_in">dispatch_async</span>(dispatch_get_main_queue(), ^&#123;</span><br><span class="line">         <span class="built_in">NSLog</span>(<span class="string">@"deadlock"</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在主线程中运用主队列同步，也就是把任务放到了主线程的队列中。 同步对于任务是立刻执行的，那么当把任务放进主队列时，它就会立马执行,只有执行完这个任务， viewDidLoad 才会继续向下执行。<br>而 viewDidLoad 和任务都是在主队列上的，由于队列的先进先出原则，任务又需等待 viewDidLoad 执行完毕 后才能继续执行，viewDidLoad 和这个任务就形成了相互循环等待，就造成了死锁。 想避免这种死锁，可以将同步改成异步 dispatch_async,或者将 dispatch_get_main_queue 换成其他串行或并行 队列，都可以解决。</p>
+<p>2、同样下面的代码也会造成死锁:</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">dispatch_queue_t</span> serialQueue = dispatch_queue_create(<span class="string">"test"</span>, DISPATCH_QUEUE_SERIAL);</span><br><span class="line">  </span><br><span class="line">  <span class="built_in">dispatch_async</span>(serialQueue, ^&#123;</span><br><span class="line">      <span class="built_in">dispatch_sync</span>(serialQueue, ^&#123;</span><br><span class="line">          <span class="built_in">NSLog</span>(<span class="string">@"deadlock"</span>);</span><br><span class="line">      &#125;);</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+
+<p>外面的函数无论是同步还是异步都会造成死锁。<br>这是因为里面的任务和外面的任务都在同一个 serialQueue 队列内，又是同步，这就和上边主队列同步的例 子一样造成了死锁<br>解决方法也和上边一样，将里面的同步改成异步 dispatch_async,或者将 serialQueue 换成其他串行或并行队 列，都可以解决</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">dispatch_queue_t</span> serialQueue = dispatch_queue_create(<span class="string">"test"</span>, DISPATCH_QUEUE_SERIAL);</span><br><span class="line">   </span><br><span class="line">   <span class="built_in">dispatch_queue_t</span> serialQueue2 = dispatch_queue_create(<span class="string">"test"</span>, DISPATCH_QUEUE_SERIAL);</span><br><span class="line">   </span><br><span class="line">   <span class="built_in">dispatch_async</span>(serialQueue, ^&#123;</span><br><span class="line">       <span class="built_in">dispatch_sync</span>(serialQueue2, ^&#123;</span><br><span class="line">           <span class="built_in">NSLog</span>(<span class="string">@"deadlock"</span>);</span><br><span class="line">       &#125;);</span><br><span class="line">   &#125;);</span><br></pre></td></tr></table></figure>
+
+<p>这样是不会死锁的,并且 serialQueue 和 serialQueue2 是在同一个线程中的。</p>
+<h3 id="GCD-任务执行顺序"><a href="#GCD-任务执行顺序" class="headerlink" title="GCD 任务执行顺序"></a>GCD 任务执行顺序</h3><ul>
+<li><strong>串行队列先异步后同步</strong></li>
+</ul>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="built_in">dispatch_queue_t</span> serialQueue = dispatch_queue_create(<span class="string">"test"</span>, DISPATCH_QUEUE_SERIAL);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"1"</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">dispatch_async</span>(serialQueue, ^&#123;</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"2"</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"3"</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">dispatch_sync</span>(serialQueue, ^&#123;</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"4"</span>);</span><br><span class="line">    &#125;);</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"5"</span>);</span><br></pre></td></tr></table></figure>
+
+<p>打印顺序是 13245</p>
+<p>首先先打印 1<br>接下来将任务 2 其添加至串行队列上，由于任务 2 是异步，不会阻塞线程，继续向下执行，打印 3 然后是任务 4,将任务 4 添加至串行队列上，因为任务 4 和任务 2 在同一串行队列，根据队列先进先出原则， 任务 4 必须等任务 2 执行后才能执行，又因为任务 4 是同步任务，会阻塞线程，只有执行完任务 4 才能继 续向下执行打印 5<br>所以最终顺序就是 13245。<br>这里的任务 4 在主线程中执行，而任务 2 在子线程中执行。<br>如果任务 4 是添加到另一个串行队列或者并行队列，则任务 2 和任务 4 无序执行(可以添加多个任务看效果)</p>
+<p>如果 GCD 里添加  performSelector 会怎么样呢？</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line">   </span><br><span class="line"><span class="built_in">dispatch_async</span>(dispatch_get_global_queue(<span class="number">0</span>, <span class="number">0</span>), ^&#123;</span><br><span class="line">    [<span class="keyword">self</span> performSelector:<span class="keyword">@selector</span>(test:) withObject:<span class="keyword">self</span> afterDelay:<span class="number">1</span>];</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>这里的 test 方法是不会去执行的，原因在于 <code>- (void)performSelector: (SEL)aSelector withObject: (nullable id)anArgument afterDelay: (NSTimeInterval)delay；</code><br>这个方法要提交任务到runloop上的，然 GCD 地城创建的线程，默认是没有开启对应的runloop的，所以这个方法会失效;<br>而如果将 dispatch_get_global_queue 改成主队列，由于主队列所在的主线程是默认开启了 runloop 的，就会 去执行(将 dispatch_async 改成同步，因为同步是在当前线程执行，那么如果当前线程是主线程，test 方法也 是会去执行的)。</p>
+<ul>
+<li><strong>dispatch_barrier（栅栏函数)</strong><ul>
+<li>dispatch_barrier_sync:Submitsabarrierblockobjectforexecutionandwaitsuntilthatblockcompletes.(提交 一个栅栏函数在执行中,它会等待栅栏函数执行完)</li>
+<li>dispatch_barrier_async:Submitsabarrierblockforasynchronousexecutionandreturnsimmediately.(提交一 个栅栏函数在异步执行中,它会立马返回)</li>
+<li>dispatch_barrier_sync 和 dispatch_barrier_async 的区别也就在于会不会阻塞当前线程</li>
+</ul>
+</li>
+</ul>
+<p>实现多读单写：</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line">- (<span class="keyword">id</span>)readDataForKey: (<span class="built_in">NSString</span> *)key &#123;</span><br><span class="line">    __block <span class="keyword">id</span> result;</span><br><span class="line">    <span class="built_in">dispatch_sync</span>(_serial, ^&#123;</span><br><span class="line">        result = [<span class="keyword">self</span> valueForKey:key];</span><br><span class="line">    &#125;);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)writeData: (<span class="keyword">id</span>)data forKey: (<span class="built_in">NSString</span> *)key &#123;</span><br><span class="line">    dispatch_barrier_async(_serial, ^&#123;</span><br><span class="line">        [<span class="keyword">self</span> setValue:data forKey:key];</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>dispatch_group_async</strong><br>使用场景： 在 n 个耗时并发任务都完成后，再执行接下来的任务。比如，在 n 个网络请求完成后去刷新UI</li>
+</ul>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"> </span><br><span class="line"><span class="keyword">for</span> (<span class="built_in">NSInteger</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">    dispatch_group_async(group, concurrentQueue, ^&#123;</span><br><span class="line">        <span class="comment">// 模拟网络请求</span></span><br><span class="line">        sleep(<span class="number">1</span>);</span><br><span class="line">        <span class="built_in">NSLog</span>(<span class="string">@"网络请求,%zd"</span>,i);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 模拟主线程刷新UI</span></span><br><span class="line">dispatch_group_notify(group, dispatch_get_main_queue(), ^&#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"主线程刷新UI"</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>dispatch_semaphore (信号量)</strong><br>GCD 中的信号量是指 Dispatch Semaphore，是持有计数的信号。<br>Dispatch Semaphore 提供三个函数：</li>
+<li>dispatch_semaphore_create: 创建一个Semaphore 并初始化信号的总量；</li>
+<li>dispatch_semaphore_signal: 发送一个信号，让信号总量 + 1；</li>
+<li>dispatch_semaphore_wait: 可以使总信号量 -1， 单信号总量为0 时就会一直等待</li>
+</ul>
+<p>Dispatch Semaphore 在实际开发中主要用于：</p>
+<ul>
+<li>保持线程同步，将异步执行任务转换为同步执行任务</li>
+<li>保证线程安全，为线程加锁</li>
+</ul>
+<p>1、 保证线程同步:</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line">dispatch_semaphore_t semaphore = dispatch_semaphore_create(<span class="number">0</span>);</span><br><span class="line">  __block <span class="built_in">NSInteger</span> number = <span class="number">0</span>;</span><br><span class="line">  <span class="built_in">dispatch_async</span>(dispatch_get_global_queue(<span class="number">0</span>, <span class="number">0</span>), ^&#123;</span><br><span class="line">      number = <span class="number">100</span>;</span><br><span class="line">      <span class="comment">// 发送信号，让信号总量 + 1</span></span><br><span class="line">      dispatch_semaphore_signal(semaphore);</span><br><span class="line">  &#125;);</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 信号量 = 0 的时候 会一直等待</span></span><br><span class="line">  dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);</span><br><span class="line">  </span><br><span class="line">  <span class="built_in">NSLog</span>(<span class="string">@"semaphore --- end, number = %zd"</span>, number);</span><br></pre></td></tr></table></figure>
+<p>dispatch_semaphore_wait 加锁阻塞了当前线程，dispatch_semaphore_signal 解锁后当前线程继续执行</p>
+<p>2、 保证线程安全，为线程加锁<br>在线程安全中可以将 dispatch_semaphore_wait 看作加锁，而 dispatch_semaphore_signal 看作解锁 首先创建全局变量</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line">_semaphore = dispatch_semaphore_create(<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+<p><font color = red> 注意到这里的初始化信号量是 1。 </font></p>
 ]]></content>
       <categories>
         <category>iOS</category>
