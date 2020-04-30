@@ -1,62 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>CocoaPads 私有库</title>
-    <url>/2018/06/28/CocoaPads-%E7%A7%81%E6%9C%89%E5%BA%93/</url>
-    <content><![CDATA[<h3 id="私有库创建步骤"><a href="#私有库创建步骤" class="headerlink" title="私有库创建步骤"></a>私有库创建步骤</h3><h5 id="1-建立自己的Git仓库，作为自己的索引库，将索引库添加到-pod-repo-中"><a href="#1-建立自己的Git仓库，作为自己的索引库，将索引库添加到-pod-repo-中" class="headerlink" title="1. 建立自己的Git仓库，作为自己的索引库，将索引库添加到 pod repo 中"></a>1. 建立自己的Git仓库，作为自己的索引库，将索引库添加到 pod repo 中</h5><p>这里以自己的服务器部署Gitlab作为私有库管理。Gitlab部署<br><a href="https://ken.io/note/centos7-gitlab-install-tutorial" target="_blank" rel="noopener">Gitlab CentOS 部署</a><br><a href="https://packages.gitlab.com/gitlab/gitlab-ce/packages/el/7/gitlab-ce-12.0.1-ce.0.el7.x86_64.rpm" target="_blank" rel="noopener">GitLab 安装包官网地址</a><br>Gitlab部署完毕后，创建类似Github的索引仓库，这里命名 gitlab-specs</p>
-<a id="more"></a>
-
-<p>将gitlab上的索引库 添加到本地</p>
-<blockquote>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">pod repo add [索引库在本地的名字] [索引库在远程服务器的地址]</span><br><span class="line"><span class="comment"># 这里用gitlab-specs本地名字为例</span></span><br><span class="line">pod repo add gitlab-specs <span class="symbol">http:</span>/<span class="regexp">/samchiang.com/samchiang</span><span class="regexp">/gitlabSpecs.git</span></span><br></pre></td></tr></table></figure>
-</blockquote>
-<p>这样可以再 ~/.cocoapods/repos 目录下看到 gitlab-specs 仓库</p>
-<hr>
-<h5 id="2-创建Pod项目"><a href="#2-创建Pod项目" class="headerlink" title="2. 创建Pod项目"></a>2. 创建Pod项目</h5><p>用下面的命令创建 pod项目，这里创建个Util 组件库</p>
-<blockquote>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">pod lib create 【pod库的项目名称】</span><br><span class="line"><span class="comment"># 例如</span></span><br><span class="line">pod lib create SCUtil</span><br></pre></td></tr></table></figure>
-</blockquote>
-<hr>
-<h5 id="3-修改Pod项目"><a href="#3-修改Pod项目" class="headerlink" title="3. 修改Pod项目"></a>3. 修改Pod项目</h5><p>可以用Exmaple 编写的pod 库，编写完成后进入第4步</p>
-<hr>
-<h5 id="4-修改-podspec文件，并验证"><a href="#4-修改-podspec文件，并验证" class="headerlink" title="4. 修改*.podspec文件，并验证"></a>4. 修改*.podspec文件，并验证</h5><ul>
-<li><h4 id="如何编写你的-podspec"><a href="#如何编写你的-podspec" class="headerlink" title="如何编写你的.podspec"></a>如何编写你的.podspec</h4><p>  一些常用信息介绍</p>
-<blockquote>
-<p>name：框架名<br>  version：当前版本（注意，是当前版本，假如你后续更新了新版本，需要修改此处）<br>  summary：简要描述，在pod search ZCPKit的时候会显示该信息。<br>  description：详细描述<br>  homepage：页面链接<br>  license：开源协议<br>  author：作者<br>  source：源码git地址<br>  platform：支持最低ios版本<br>  source_files：源文件（可以包含.h和.m）<br>  public_header_files：头文件(.h文件)<br>  resources：资源文件（配置的文件都会被放到mainBundle中）<br>  resource_bundles：资源文件（配置的文件会放到你自己指定的bundle中）<br>  frameworks：依赖的系统框架<br>  vendored_frameworks：依赖的非系统框架<br>  libraries：依赖的系统库<br>  vendored_libraries：依赖的非系统的静态库<br>  dependency：依赖的三方库</p>
-</blockquote>
-</li>
-<li><h4 id="如何实现目录分层"><a href="#如何实现目录分层" class="headerlink" title="如何实现目录分层"></a>如何实现目录分层</h4><p><img src="https://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/WeChat5e07f88b10d442daffce258ac9f8ec8e.png?Expires=1587446709&OSSAccessKeyId=TMP.3KkBREs12Zb6eLL52aC9ESyqTnNw7d8X77WbuieTddGJ32n2Z1HoQd6Vz8TWujDsNsAwN4jq16kzhTLtrfM9qyBnRiyFSM&Signature=xKNPmz8WQPJ647KMUvSjKxfaRss%3D" alt="53082e9beb54d5ec64abacc21f5502c6.png"></p>
-</li>
-</ul>
-<p>Pod目录结构</p>
-<blockquote>
-<p>SCUtil<br>    |<strong>__ ValidUtil<br>    |__</strong> CropUtil</p>
-</blockquote>
-<p>使用 subspec</p>
-<blockquote>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">=========== subspecs 配置  ===========</span><br><span class="line">s.subspece <span class="string">'validUtil'</span> <span class="keyword">do</span> <span class="params">|ss|</span></span><br><span class="line">     <span class="comment">#目录为文件根目录下第一路由</span></span><br><span class="line">     ss.source_files = <span class="string">'ValidUtil/*'</span> </span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">s.subspec <span class="string">'CropUtil'</span> <span class="keyword">do</span> <span class="params">|ss|</span></span><br><span class="line">   ss.source_files = <span class="string">'CropUtil/*'</span></span><br><span class="line">   <span class="comment">#如果有依赖项添加依赖项,这里假设 CropUtil依赖 ValidUtil</span></span><br><span class="line">   ss.dependency <span class="string">'SCUtil/ValidUtil'</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-</blockquote>
-<p>其他依赖项和主项目的配置方式是一致的</p>
-<p><a href="https://segmentfault.com/a/1190000012269307" target="_blank" rel="noopener">参考podspec配置文章</a><br><a href="http://www.mengyueping.com/2018/08/16/iOS_CocoaPods_03/" target="_blank" rel="noopener">参考podspec可能错误的文章</a></p>
-<ul>
-<li><h4 id="验证podspec编写是否无误"><a href="#验证podspec编写是否无误" class="headerlink" title="验证podspec编写是否无误"></a>验证podspec编写是否无误</h4></li>
-</ul>
-<blockquote>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">pod lib lint</span><br></pre></td></tr></table></figure>
-</blockquote>
-<hr>
-<h5 id="5-建立pod-Git库，将Pod项目代码提交，并添加标签"><a href="#5-建立pod-Git库，将Pod项目代码提交，并添加标签" class="headerlink" title="5. 建立pod Git库，将Pod项目代码提交，并添加标签"></a>5. 建立pod Git库，将Pod项目代码提交，并添加标签</h5><figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">"提交版本描述"</span></span><br><span class="line">git remote add origin 项目仓库地址 <span class="comment"># 注意，这不是Spec Repo私有库的仓库地址！！是pod 私有库的远程地址</span></span><br><span class="line">git push origin master</span><br><span class="line">git tag -m <span class="string">"标签描述"</span> 标签名</span><br><span class="line">git push --tags</span><br></pre></td></tr></table></figure>
-
-<h5 id="6-将-pod库-索引添加到自己的索引库"><a href="#6-将-pod库-索引添加到自己的索引库" class="headerlink" title="6. 将 pod库 索引添加到自己的索引库"></a>6. 将 pod库 索引添加到自己的索引库</h5><p>这里 本地索引库以 gitlab-specs 为例 ,自己的pod私有库以 SCUtil为例</p>
-<figure class="highlight reasonml"><table><tr><td class="code"><pre><span class="line">pod repo push gitlab-specs <span class="module-access"><span class="module"><span class="identifier">SCUtil</span>.</span></span>podspec</span><br></pre></td></tr></table></figure>
-
-
-<h5 id="7-测试"><a href="#7-测试" class="headerlink" title="7. 测试"></a>7. 测试</h5><figure class="highlight awk"><table><tr><td class="code"><pre><span class="line"><span class="regexp">//</span>创建自己的项目，添加podfile</span><br><span class="line">pod init </span><br><span class="line"><span class="regexp">//</span>或者cd到自己pod私有库文件地址，用vim编写也可以 vim podfile </span><br><span class="line"></span><br><span class="line"><span class="regexp">//</span>添加Pod私有索引库</span><br><span class="line">source http:<span class="regexp">//</span>samchiang.com<span class="regexp">/samchiang/gi</span>tlabSpecs.git <span class="regexp">//</span>索引库地址</span><br><span class="line"></span><br><span class="line"><span class="regexp">//</span>添加自己的私有库</span><br><span class="line">pod <span class="string">'SCUtil'</span></span><br><span class="line"></span><br><span class="line"><span class="regexp">//</span>最后执行pod install</span><br><span class="line">pod install</span><br></pre></td></tr></table></figure>]]></content>
-      <categories>
-        <category>iOS</category>
-      </categories>
-  </entry>
-  <entry>
     <title>多线程</title>
     <url>/2018/04/19/%E5%A4%9A%E7%BA%BF%E7%A8%8B/</url>
     <content><![CDATA[<h2 id="进程、线程"><a href="#进程、线程" class="headerlink" title="进程、线程"></a>进程、线程</h2><h3 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h3><ul>
@@ -187,7 +131,105 @@
 <p>2、 保证线程安全，为线程加锁<br>在线程安全中可以将 dispatch_semaphore_wait 看作加锁，而 dispatch_semaphore_signal 看作解锁 首先创建全局变量</p>
 <figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line">_semaphore = dispatch_semaphore_create(<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
 <p><font color = red> 注意到这里的初始化信号量是 1。 </font></p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line">- (<span class="keyword">void</span>)asyncTask &#123;</span><br><span class="line">    dispatch_semaphore_wait(_semaphore, DISPATCH_TIME_FOREVER);</span><br><span class="line"></span><br><span class="line">    count++;</span><br><span class="line"></span><br><span class="line">    sleep(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"执行任务:%zd"</span>m count);</span><br><span class="line"></span><br><span class="line">    dispatch_semaphore_signal(_semaphore);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>异步并发调用 asyncTask</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="keyword">for</span> (<span class="built_in">NSInteger</span> i = <span class="number">0</span>; i &lt; <span class="number">100</span>; i++) &#123;</span><br><span class="line">   <span class="built_in">dispatch_async</span>(dispatch_get_global_queue(<span class="number">0</span>,<span class="number">0</span>), ^&#123;</span><br><span class="line">       [<span class="keyword">self</span> asyncTask];</span><br><span class="line">   &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>打印任务是从1  顺序执行到100, 没有发生两个任务同时执行的情况</p>
+<p>原因如下：</p>
+<blockquote>
+<p>在子线程中并发执行 asyncTask，那么第一个添加到并发队列里的，会将信号量减 1，此时信号量等于 0， 可以执行接下来的任务。而并发队列中其他任务，由于此时信号量不等于 0，必须等当前正在执行的任务 执行完毕后调用 dispatch_semaphore_signal 将信号量加 1，才可以继续执行接下来的任务，以此类推， 从而达到线程加锁的目的。</p>
+</blockquote>
+<ul>
+<li>延时函数 （dispatch_after）</li>
+</ul>
+<p>dispatch_after 能让我们添加进队列的任务延时执行，该行数并不是指在指定时间后执行处理，而只是在指定时间追加处理到 dispatch_queue</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 第一个参数是time， 第二个参数是 dispatch_queue, 第三个参数是要执行的block</span></span><br><span class="line">dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(<span class="number">2</span> * <span class="built_in">NSEC_PER_SEC</span>)), dispatch_get_main_queue(), ^ &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"dispatch_after"</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>由于其内部使用的是 dispatch_time_t 管理时间，而不是 NSTimer.<br>所以如果在子线程中调用，相比 performSelector: afterDelay, 不用关系 runloop 是否开启</p>
+<ul>
+<li>使用 dispatch_once 实现单例</li>
+</ul>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line">+ (<span class="keyword">instancetype</span>)shareInstance &#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> onceToken;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">id</span> instance = <span class="literal">nil</span>;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">dispatch_once</span>(&amp;onceTaken, ^&#123;</span><br><span class="line">        instance = [[<span class="keyword">self</span> alloc] init];</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="NSOperationQueue-的优缺点"><a href="#NSOperationQueue-的优缺点" class="headerlink" title="NSOperationQueue 的优缺点"></a>NSOperationQueue 的优缺点</h3><p><code>NSOperation</code>、<code>NSOperationQueue</code> 是苹果提供给我们的一套多线程解决方案。实际上 <code>NSOperation</code>、 <code>NSOperationQueue</code> 是基于 <code>GCD</code> 更高一层的封装，完全面向对象。但是比 <code>GCD</code> 更简单易用、代码可读 性也更高。</p>
+<p>1、可以添加任务依赖，方便控制执行顺序;</p>
+<p>2、 可以设定操作执行的优先级;</p>
+<p>3、 任务执行状态控制: <code>isReady</code>, <code>isExecuting</code>, <code>isFinished</code>, <code>isCancelled</code>;</p>
+<p>如果只是重写 <code>NSOperation</code> 的 <code>main</code> 方法， 由底层控制变更执行任务及完成状态，以及任务退出如果重写了 <code>NSOperation</code> 的 <code>start</code> 方法， 自行控制任务状态<br>系统通过 KVO 的方式一处 <code>isFinished == YES</code> 的 <code>NSOperation</code></p>
+<p>4、 可以设置最大并发量</p>
+<h3 id="NSOperation-和-NSOperationQueue"><a href="#NSOperation-和-NSOperationQueue" class="headerlink" title="NSOperation 和 NSOperationQueue"></a>NSOperation 和 NSOperationQueue</h3><ul>
+<li><p><strong>操作 (Operation):</strong></p>
+<p>  执行操作的意思，换句话说就是你在线程中执行的那段代码。<br>  在 GCD 中是放在 block 中的。在 NSOperation 中，使用 <code>NSOperation</code> 子类 <code>NSInvocationOperation</code>、 <code>NSBlockOperation</code>，或者自定义子类来封装操作。</p>
+</li>
+<li><p><strong>操作队列 (Operation Queues)</strong></p>
+<p>这里的队列指操作队列，即用来存放操作的队列。不同于 GCD 中的调度队列 FIFO(先进先出)的原则。 <code>NSOperationQueue</code> 对于添加到队列中的操作，首先进入准备就绪的状态(就绪状态取决于操作之间的依 赖关系)，然后进入就绪状态的操作的开始执行顺序(非结束执行顺序)由操作之间相对的优先级决定(优 先级是操作对象自身的属性)。</p>
+<p>操作队列通过设置最大并发操作数( <code>maxConcurrentOperationCount</code> )来控制并发、串行。 <code>NSOperationQueue</code> 为我们提供了两种不同类型的队列:主队列和自定义队列。主队列运行在主线程之上，<br>而自定义队列在后台执行。</p>
+</li>
+</ul>
+<h3 id="常驻线程的实现"><a href="#常驻线程的实现" class="headerlink" title="常驻线程的实现"></a>常驻线程的实现</h3><p>NSThread 在实际开发中比较常用到的场景就是去实现常驻线程。 本质是开启 RunLoop 监听，实现线程常驻</p>
+<ul>
+<li>由于每次开辟子线程都会消耗CPU， 在需要频繁使用子线程的情况下，频繁开辟子线程会消耗大量的CPU，而且创建线程都是任务执行完成后也就释放了，不能再次利用，那么如何创建一个线程可以让它可以再次工作呢？ 也就是创建一个常驻线程。</li>
+</ul>
+<p>首先常驻线程既然是常驻，那么我们可以用 GCD 实现一个单例来保存 NSThread</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line">+ (<span class="built_in">NSThread</span> *) shareInstance &#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="built_in">NSThread</span> * shareInstance = <span class="literal">nil</span>;</span><br><span class="line">    <span class="keyword">static</span> <span class="built_in">dispatch_once_t</span> oncePredicate;</span><br><span class="line">    <span class="built_in">dispatch_once</span>(&amp;oncePredicate, ^&#123;</span><br><span class="line">        shareThread = [[<span class="built_in">NSThread</span> alloc] initWithTarget:<span class="keyword">self</span> selector: <span class="keyword">@selector</span>(threadTest) object: <span class="literal">nil</span>];</span><br><span class="line">        [shareThread setName: <span class="string">@"threadTest"</span>];</span><br><span class="line">        [shareThread start];</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">+ (<span class="keyword">void</span>)threadTest &#123;</span><br><span class="line">    <span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">        <span class="built_in">NSRunLoop</span> *runLoop = [<span class="built_in">NSRunLoop</span> currentRunLoop];</span><br><span class="line">        [runLoop addPort: [<span class="built_in">NSMachPort</span> port] forMode: <span class="built_in">NSDefaultRunLoopMode</span>]; <span class="comment">// 给RunLoop 添加监听端口</span></span><br><span class="line">        [runLoop run]; <span class="comment">// 启动RunLoop</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">- (<span class="keyword">void</span>)viewDidLoad &#123;</span><br><span class="line">    [<span class="keyword">super</span> viewDidLoad];</span><br><span class="line">    [<span class="keyword">self</span> performSelector: <span class="keyword">@selector</span>(test) onThread: [ViewController shareThread] withObject: <span class="literal">nil</span> waitUntilDone: <span class="literal">NO</span>];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)test &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"test:%@"</span>, [<span class="built_in">NSThread</span> currentThread]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 ]]></content>
+      <categories>
+        <category>iOS</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>CocoaPads 私有库</title>
+    <url>/2018/06/28/CocoaPads-%E7%A7%81%E6%9C%89%E5%BA%93/</url>
+    <content><![CDATA[<h3 id="私有库创建步骤"><a href="#私有库创建步骤" class="headerlink" title="私有库创建步骤"></a>私有库创建步骤</h3><h5 id="1-建立自己的Git仓库，作为自己的索引库，将索引库添加到-pod-repo-中"><a href="#1-建立自己的Git仓库，作为自己的索引库，将索引库添加到-pod-repo-中" class="headerlink" title="1. 建立自己的Git仓库，作为自己的索引库，将索引库添加到 pod repo 中"></a>1. 建立自己的Git仓库，作为自己的索引库，将索引库添加到 pod repo 中</h5><p>这里以自己的服务器部署Gitlab作为私有库管理。Gitlab部署<br><a href="https://ken.io/note/centos7-gitlab-install-tutorial" target="_blank" rel="noopener">Gitlab CentOS 部署</a><br><a href="https://packages.gitlab.com/gitlab/gitlab-ce/packages/el/7/gitlab-ce-12.0.1-ce.0.el7.x86_64.rpm" target="_blank" rel="noopener">GitLab 安装包官网地址</a><br>Gitlab部署完毕后，创建类似Github的索引仓库，这里命名 gitlab-specs</p>
+<a id="more"></a>
+
+<p>将gitlab上的索引库 添加到本地</p>
+<blockquote>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">pod repo add [索引库在本地的名字] [索引库在远程服务器的地址]</span><br><span class="line"><span class="comment"># 这里用gitlab-specs本地名字为例</span></span><br><span class="line">pod repo add gitlab-specs <span class="symbol">http:</span>/<span class="regexp">/samchiang.com/samchiang</span><span class="regexp">/gitlabSpecs.git</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>这样可以再 ~/.cocoapods/repos 目录下看到 gitlab-specs 仓库</p>
+<hr>
+<h5 id="2-创建Pod项目"><a href="#2-创建Pod项目" class="headerlink" title="2. 创建Pod项目"></a>2. 创建Pod项目</h5><p>用下面的命令创建 pod项目，这里创建个Util 组件库</p>
+<blockquote>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">pod lib create 【pod库的项目名称】</span><br><span class="line"><span class="comment"># 例如</span></span><br><span class="line">pod lib create SCUtil</span><br></pre></td></tr></table></figure>
+</blockquote>
+<hr>
+<h5 id="3-修改Pod项目"><a href="#3-修改Pod项目" class="headerlink" title="3. 修改Pod项目"></a>3. 修改Pod项目</h5><p>可以用Exmaple 编写的pod 库，编写完成后进入第4步</p>
+<hr>
+<h5 id="4-修改-podspec文件，并验证"><a href="#4-修改-podspec文件，并验证" class="headerlink" title="4. 修改*.podspec文件，并验证"></a>4. 修改*.podspec文件，并验证</h5><ul>
+<li><h4 id="如何编写你的-podspec"><a href="#如何编写你的-podspec" class="headerlink" title="如何编写你的.podspec"></a>如何编写你的.podspec</h4><p>  一些常用信息介绍</p>
+<blockquote>
+<p>name：框架名<br>  version：当前版本（注意，是当前版本，假如你后续更新了新版本，需要修改此处）<br>  summary：简要描述，在pod search ZCPKit的时候会显示该信息。<br>  description：详细描述<br>  homepage：页面链接<br>  license：开源协议<br>  author：作者<br>  source：源码git地址<br>  platform：支持最低ios版本<br>  source_files：源文件（可以包含.h和.m）<br>  public_header_files：头文件(.h文件)<br>  resources：资源文件（配置的文件都会被放到mainBundle中）<br>  resource_bundles：资源文件（配置的文件会放到你自己指定的bundle中）<br>  frameworks：依赖的系统框架<br>  vendored_frameworks：依赖的非系统框架<br>  libraries：依赖的系统库<br>  vendored_libraries：依赖的非系统的静态库<br>  dependency：依赖的三方库</p>
+</blockquote>
+</li>
+<li><h4 id="如何实现目录分层"><a href="#如何实现目录分层" class="headerlink" title="如何实现目录分层"></a>如何实现目录分层</h4><p><img src="https://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/WeChat5e07f88b10d442daffce258ac9f8ec8e.png?Expires=1587446709&OSSAccessKeyId=TMP.3KkBREs12Zb6eLL52aC9ESyqTnNw7d8X77WbuieTddGJ32n2Z1HoQd6Vz8TWujDsNsAwN4jq16kzhTLtrfM9qyBnRiyFSM&Signature=xKNPmz8WQPJ647KMUvSjKxfaRss%3D" alt="53082e9beb54d5ec64abacc21f5502c6.png"></p>
+</li>
+</ul>
+<p>Pod目录结构</p>
+<blockquote>
+<p>SCUtil<br>    |<strong>__ ValidUtil<br>    |__</strong> CropUtil</p>
+</blockquote>
+<p>使用 subspec</p>
+<blockquote>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">=========== subspecs 配置  ===========</span><br><span class="line">s.subspece <span class="string">'validUtil'</span> <span class="keyword">do</span> <span class="params">|ss|</span></span><br><span class="line">     <span class="comment">#目录为文件根目录下第一路由</span></span><br><span class="line">     ss.source_files = <span class="string">'ValidUtil/*'</span> </span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">s.subspec <span class="string">'CropUtil'</span> <span class="keyword">do</span> <span class="params">|ss|</span></span><br><span class="line">   ss.source_files = <span class="string">'CropUtil/*'</span></span><br><span class="line">   <span class="comment">#如果有依赖项添加依赖项,这里假设 CropUtil依赖 ValidUtil</span></span><br><span class="line">   ss.dependency <span class="string">'SCUtil/ValidUtil'</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>其他依赖项和主项目的配置方式是一致的</p>
+<p><a href="https://segmentfault.com/a/1190000012269307" target="_blank" rel="noopener">参考podspec配置文章</a><br><a href="http://www.mengyueping.com/2018/08/16/iOS_CocoaPods_03/" target="_blank" rel="noopener">参考podspec可能错误的文章</a></p>
+<ul>
+<li><h4 id="验证podspec编写是否无误"><a href="#验证podspec编写是否无误" class="headerlink" title="验证podspec编写是否无误"></a>验证podspec编写是否无误</h4></li>
+</ul>
+<blockquote>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">pod lib lint</span><br></pre></td></tr></table></figure>
+</blockquote>
+<hr>
+<h5 id="5-建立pod-Git库，将Pod项目代码提交，并添加标签"><a href="#5-建立pod-Git库，将Pod项目代码提交，并添加标签" class="headerlink" title="5. 建立pod Git库，将Pod项目代码提交，并添加标签"></a>5. 建立pod Git库，将Pod项目代码提交，并添加标签</h5><figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">"提交版本描述"</span></span><br><span class="line">git remote add origin 项目仓库地址 <span class="comment"># 注意，这不是Spec Repo私有库的仓库地址！！是pod 私有库的远程地址</span></span><br><span class="line">git push origin master</span><br><span class="line">git tag -m <span class="string">"标签描述"</span> 标签名</span><br><span class="line">git push --tags</span><br></pre></td></tr></table></figure>
+
+<h5 id="6-将-pod库-索引添加到自己的索引库"><a href="#6-将-pod库-索引添加到自己的索引库" class="headerlink" title="6. 将 pod库 索引添加到自己的索引库"></a>6. 将 pod库 索引添加到自己的索引库</h5><p>这里 本地索引库以 gitlab-specs 为例 ,自己的pod私有库以 SCUtil为例</p>
+<figure class="highlight reasonml"><table><tr><td class="code"><pre><span class="line">pod repo push gitlab-specs <span class="module-access"><span class="module"><span class="identifier">SCUtil</span>.</span></span>podspec</span><br></pre></td></tr></table></figure>
+
+
+<h5 id="7-测试"><a href="#7-测试" class="headerlink" title="7. 测试"></a>7. 测试</h5><figure class="highlight awk"><table><tr><td class="code"><pre><span class="line"><span class="regexp">//</span>创建自己的项目，添加podfile</span><br><span class="line">pod init </span><br><span class="line"><span class="regexp">//</span>或者cd到自己pod私有库文件地址，用vim编写也可以 vim podfile </span><br><span class="line"></span><br><span class="line"><span class="regexp">//</span>添加Pod私有索引库</span><br><span class="line">source http:<span class="regexp">//</span>samchiang.com<span class="regexp">/samchiang/gi</span>tlabSpecs.git <span class="regexp">//</span>索引库地址</span><br><span class="line"></span><br><span class="line"><span class="regexp">//</span>添加自己的私有库</span><br><span class="line">pod <span class="string">'SCUtil'</span></span><br><span class="line"></span><br><span class="line"><span class="regexp">//</span>最后执行pod install</span><br><span class="line">pod install</span><br></pre></td></tr></table></figure>]]></content>
       <categories>
         <category>iOS</category>
       </categories>
