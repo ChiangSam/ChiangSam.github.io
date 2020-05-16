@@ -425,7 +425,7 @@ code {
   word-wrap: break-word;
 }
 .highlight *::selection {
-  background: #000;
+  background: #515151;
 }
 .highlight pre {
   border: 0;
@@ -1198,7 +1198,7 @@ pre .javascript .function {
 }
 .links-of-author a::before,
 .links-of-author span.exturl::before {
-  background: #b4e2ff;
+  background: #ff6a7d;
   border-radius: 50%;
   content: ' ';
   display: inline-block;
@@ -1989,6 +1989,13 @@ pre .javascript .function {
 }
 #qr p {
   text-align: center;
+}
+.post-copyright {
+  background: var(--card-bg-color);
+  border-left: 3px solid #ff2a2a;
+  list-style: none;
+  margin: 2em 0 0;
+  padding: 0.5em 1em;
 }
 .my_post_copyright {
   width: 85%;

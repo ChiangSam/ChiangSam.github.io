@@ -1,9 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>CocoaPads 私有库</title>
+    <url>/2018/06/28/CocoaPads-%E7%A7%81%E6%9C%89%E5%BA%93/</url>
+    <content><![CDATA[<h3 id="私有库创建步骤"><a href="#私有库创建步骤" class="headerlink" title="私有库创建步骤"></a>私有库创建步骤</h3><h5 id="1-建立自己的-Git-仓库，作为自己的索引库，将索引库添加到-pod-repo-中"><a href="#1-建立自己的-Git-仓库，作为自己的索引库，将索引库添加到-pod-repo-中" class="headerlink" title="1. 建立自己的 Git 仓库，作为自己的索引库，将索引库添加到 pod repo 中"></a>1. 建立自己的 Git 仓库，作为自己的索引库，将索引库添加到 pod repo 中</h5><p>这里以自己的服务器部署 Gitlab 作为私有库管理。Gitlab 部署<br><a href="https://ken.io/note/centos7-gitlab-install-tutorial" target="_blank" rel="noopener">Gitlab CentOS 部署</a><br><a href="https://packages.gitlab.com/gitlab/gitlab-ce/packages/el/7/gitlab-ce-12.0.1-ce.0.el7.x86_64.rpm" target="_blank" rel="noopener">GitLab 安装包官网地址</a><br>Gitlab 部署完毕后，创建类似 Github 的索引仓库，这里命名 gitlab-specs</p>
+<a id="more"></a>
+
+<p>将 gitlab 上的索引库 添加到本地</p>
+<blockquote>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">pod repo add [索引库在本地的名字] [索引库在远程服务器的地址]</span><br><span class="line"><span class="comment"># 这里用gitlab-specs本地名字为例</span></span><br><span class="line">pod repo add gitlab-specs <span class="symbol">http:</span>/<span class="regexp">/samchiang.com/samchiang</span><span class="regexp">/gitlabSpecs.git</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>这样可以再 ~/.cocoapods/repos 目录下看到 gitlab-specs 仓库</p>
+<hr>
+<h5 id="2-创建-Pod-项目"><a href="#2-创建-Pod-项目" class="headerlink" title="2. 创建 Pod 项目"></a>2. 创建 Pod 项目</h5><p>用下面的命令创建 pod 项目，这里创建个 Util 组件库</p>
+<blockquote>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">pod lib create 【pod库的项目名称】</span><br><span class="line"><span class="comment"># 例如</span></span><br><span class="line">pod lib create SCUtil</span><br></pre></td></tr></table></figure>
+</blockquote>
+<hr>
+<h5 id="3-修改-Pod-项目"><a href="#3-修改-Pod-项目" class="headerlink" title="3. 修改 Pod 项目"></a>3. 修改 Pod 项目</h5><p>可以用 Exmaple 编写的 pod 库，编写完成后进入第 4 步</p>
+<hr>
+<h5 id="4-修改-podspec-文件，并验证"><a href="#4-修改-podspec-文件，并验证" class="headerlink" title="4. 修改*.podspec 文件，并验证"></a>4. 修改*.podspec 文件，并验证</h5><ul>
+<li><h4 id="如何编写你的-podspec"><a href="#如何编写你的-podspec" class="headerlink" title="如何编写你的.podspec"></a>如何编写你的.podspec</h4><p>一些常用信息介绍</p>
+<blockquote>
+<p>name：框架名<br>version：当前版本（注意，是当前版本，假如你后续更新了新版本，需要修改此处）<br>summary：简要描述，在 pod search ZCPKit 的时候会显示该信息。<br>description：详细描述<br>homepage：页面链接<br>license：开源协议<br>author：作者<br>source：源码 git 地址<br>platform：支持最低 ios 版本<br>source_files：源文件（可以包含.h 和.m）<br>public_header_files：头文件(.h 文件)<br>resources：资源文件（配置的文件都会被放到 mainBundle 中）<br>resource_bundles：资源文件（配置的文件会放到你自己指定的 bundle 中）<br>frameworks：依赖的系统框架<br>vendored_frameworks：依赖的非系统框架<br>libraries：依赖的系统库<br>vendored_libraries：依赖的非系统的静态库<br>dependency：依赖的三方库</p>
+</blockquote>
+</li>
+<li><h4 id="如何实现目录分层"><a href="#如何实现目录分层" class="headerlink" title="如何实现目录分层"></a>如何实现目录分层</h4><p><img src="https://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/WeChat5e07f88b10d442daffce258ac9f8ec8e.png" alt="53082e9beb54d5ec64abacc21f5502c6.png"></p>
+</li>
+</ul>
+<p>Pod 目录结构</p>
+<blockquote>
+<p>SCUtil</p>
+</blockquote>
+<pre><code>|____ ValidUtil
+|____ CropUtil</code></pre><blockquote>
+</blockquote>
+<p>使用 subspec</p>
+<blockquote>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">=========== subspecs 配置  ===========</span><br><span class="line">s.subspece <span class="string">'validUtil'</span> <span class="keyword">do</span> <span class="params">|ss|</span></span><br><span class="line">     <span class="comment">#目录为文件根目录下第一路由</span></span><br><span class="line">     ss.source_files = <span class="string">'ValidUtil/*'</span></span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">s.subspec <span class="string">'CropUtil'</span> <span class="keyword">do</span> <span class="params">|ss|</span></span><br><span class="line">   ss.source_files = <span class="string">'CropUtil/*'</span></span><br><span class="line">   <span class="comment">#如果有依赖项添加依赖项,这里假设 CropUtil依赖 ValidUtil</span></span><br><span class="line">   ss.dependency <span class="string">'SCUtil/ValidUtil'</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
+</blockquote>
+<p>其他依赖项和主项目的配置方式是一致的</p>
+<p><a href="https://segmentfault.com/a/1190000012269307" target="_blank" rel="noopener">参考 podspec 配置文章</a><br><a href="http://www.mengyueping.com/2018/08/16/iOS_CocoaPods_03/" target="_blank" rel="noopener">参考 podspec 可能错误的文章</a></p>
+<ul>
+<li><h4 id="验证-podspec-编写是否无误"><a href="#验证-podspec-编写是否无误" class="headerlink" title="验证 podspec 编写是否无误"></a>验证 podspec 编写是否无误</h4></li>
+</ul>
+<blockquote>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">pod lib lint</span><br></pre></td></tr></table></figure>
+</blockquote>
+<hr>
+<h5 id="5-建立-pod-Git-库，将-Pod-项目代码提交，并添加标签"><a href="#5-建立-pod-Git-库，将-Pod-项目代码提交，并添加标签" class="headerlink" title="5. 建立 pod Git 库，将 Pod 项目代码提交，并添加标签"></a>5. 建立 pod Git 库，将 Pod 项目代码提交，并添加标签</h5><figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">"提交版本描述"</span></span><br><span class="line">git remote add origin 项目仓库地址 <span class="comment"># 注意，这不是Spec Repo私有库的仓库地址！！是pod 私有库的远程地址</span></span><br><span class="line">git push origin master</span><br><span class="line">git tag -m <span class="string">"标签描述"</span> 标签名</span><br><span class="line">git push --tags</span><br></pre></td></tr></table></figure>
+
+<h5 id="6-将-pod-库-索引添加到自己的索引库"><a href="#6-将-pod-库-索引添加到自己的索引库" class="headerlink" title="6. 将 pod 库 索引添加到自己的索引库"></a>6. 将 pod 库 索引添加到自己的索引库</h5><p>这里 本地索引库以 gitlab-specs 为例 ,自己的 pod 私有库以 SCUtil 为例</p>
+<figure class="highlight reasonml"><table><tr><td class="code"><pre><span class="line">pod repo push gitlab-specs <span class="module-access"><span class="module"><span class="identifier">SCUtil</span>.</span></span>podspec</span><br></pre></td></tr></table></figure>
+
+<h5 id="7-测试"><a href="#7-测试" class="headerlink" title="7. 测试"></a>7. 测试</h5><figure class="highlight awk"><table><tr><td class="code"><pre><span class="line"><span class="regexp">//</span>创建自己的项目，添加podfile</span><br><span class="line">pod init</span><br><span class="line"><span class="regexp">//</span>或者cd到自己pod私有库文件地址，用vim编写也可以 vim podfile</span><br><span class="line"></span><br><span class="line"><span class="regexp">//</span>添加Pod私有索引库</span><br><span class="line">source http:<span class="regexp">//</span>samchiang.com<span class="regexp">/samchiang/gi</span>tlabSpecs.git <span class="regexp">//</span>索引库地址</span><br><span class="line"></span><br><span class="line"><span class="regexp">//</span>添加自己的私有库</span><br><span class="line">pod <span class="string">'SCUtil'</span></span><br><span class="line"></span><br><span class="line"><span class="regexp">//</span>最后执行pod install</span><br><span class="line">pod install</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>iOS</category>
+      </categories>
+      <tags>
+        <tag>CocoaPods</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>iOS 逆向工具 class-dump</title>
+    <url>/2020/05/08/Mach-O-class-dump/</url>
+    <content><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>class-dump 是一个工具，它利用了 Objective-C 语言的运行时特性，将存储在 Mach-O 文件中的头文件信息提取出来，并生成对应的 .h 文件。</p>
+<a id="more"></a>
+
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>可以在其<a href="http://stevenygard.com/projects/class-dump/" target="_blank" rel="noopener">class-dump 官网</a>下载，将里面的 class-dump 直接放在/usr/local/bin 目录，并给个可执行权限即可 如果/usr/local/bin 没有添加到 PATH,请自行添加</p>
+<h2 id="如何使用-class-dump"><a href="#如何使用-class-dump" class="headerlink" title="如何使用 class-dump"></a>如何使用 class-dump</h2><p><code>class-dump -H Mach-O 文件路径 -o 头文件存放目录</code></p>
+<h2 id="Mach-O-文件"><a href="#Mach-O-文件" class="headerlink" title="Mach-O 文件"></a>Mach-O 文件</h2><p><code>Mach-O</code> 其实是 <code>Mach Object</code> 文件格式的缩写，是 <code>mac</code> 以及 <code>iOS</code> 上可执行文件的格式， 类似于 <code>windows</code> 上的 <code>PE</code> 格式 ( <code>Portable Executable</code> ) , <code>linux</code> 上的 <code>elf</code> 格式 ( <code>Executable and Linking Format</code> ) .<br>它是一种用于可执行文件、目标代码、动态库的文件格式。作为 <code>a.out</code> 格式的替代，<code>Mach-O</code> 提供了更强的扩展性。<br>但是除了可执行文件外 , 其实还有一些文件也是使用的 <code>Mach-O</code> 的文件格式 .<br>属于 <code>Mach-O</code> 格式的常见文件</p>
+<blockquote>
+<ul>
+<li>目标文件 .o</li>
+<li>库文件<ul>
+<li>.a</li>
+<li>.dylib</li>
+<li>Framework</li>
+</ul>
+</li>
+<li>可执行文件<br>dyld ( 动态链接器 )<br>.dsym ( 符号表 )</li>
+</ul>
+</blockquote>
+<p>也就是说 <code>Mach-O</code> 并非一定是可执行文件 , 它是一种文件格式 , 分为 <code>Mach-O Object</code> 目标文件 、<code>Mach-O ececutable</code>可执行文件、 <code>Mach-O dynamically</code> 动态库文件、 <code>Mach-O dynamic linker</code> 动态链接器文件、 <code>Mach-O dSYM companion</code> 符号表文件 , 等等 .</p>
+]]></content>
+      <categories>
+        <category>hook</category>
+      </categories>
+      <tags>
+        <tag>class-dump、hook</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>多线程</title>
     <url>/2018/04/19/%E5%A4%9A%E7%BA%BF%E7%A8%8B/</url>
-    <content><![CDATA[<h2 id="进程、线程"><a href="#进程、线程" class="headerlink" title="进程、线程"></a>进程、线程</h2><h3 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h3><ul>
+    <content><![CDATA[<meta name="referrer" content="no-referrer"/>
+
+<h2 id="进程、线程"><a href="#进程、线程" class="headerlink" title="进程、线程"></a>进程、线程</h2><h3 id="进程"><a href="#进程" class="headerlink" title="进程"></a>进程</h3><ul>
 <li>进程是一个具有一定独立功能的程序关于某次数据集合的一次运行活动，它是操作系统分配资源的基本单位；</li>
 <li>进程是指在系统中正在运行的一个应用程序，就是一段程序的执行过程，我们可以理解成手机里的一个App；</li>
 <li>每个进程之间都是独立的，每个进程运行在其专用且受保护的内存空间内，拥有独立运行所需的全部资源；</li>
@@ -179,59 +273,73 @@
       </categories>
   </entry>
   <entry>
-    <title>CocoaPads 私有库</title>
-    <url>/2018/06/28/CocoaPads-%E7%A7%81%E6%9C%89%E5%BA%93/</url>
-    <content><![CDATA[<h3 id="私有库创建步骤"><a href="#私有库创建步骤" class="headerlink" title="私有库创建步骤"></a>私有库创建步骤</h3><h5 id="1-建立自己的Git仓库，作为自己的索引库，将索引库添加到-pod-repo-中"><a href="#1-建立自己的Git仓库，作为自己的索引库，将索引库添加到-pod-repo-中" class="headerlink" title="1. 建立自己的Git仓库，作为自己的索引库，将索引库添加到 pod repo 中"></a>1. 建立自己的Git仓库，作为自己的索引库，将索引库添加到 pod repo 中</h5><p>这里以自己的服务器部署Gitlab作为私有库管理。Gitlab部署<br><a href="https://ken.io/note/centos7-gitlab-install-tutorial" target="_blank" rel="noopener">Gitlab CentOS 部署</a><br><a href="https://packages.gitlab.com/gitlab/gitlab-ce/packages/el/7/gitlab-ce-12.0.1-ce.0.el7.x86_64.rpm" target="_blank" rel="noopener">GitLab 安装包官网地址</a><br>Gitlab部署完毕后，创建类似Github的索引仓库，这里命名 gitlab-specs</p>
+    <title>homebrew安装及相关问题解决</title>
+    <url>/2019/07/15/homebrew-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/</url>
+    <content><![CDATA[<h3 id="什么是Homebrew"><a href="#什么是Homebrew" class="headerlink" title="什么是Homebrew"></a>什么是Homebrew</h3><p>Homebrew 是 Mac OS 的一种包管理工具，相当于 Redhat Linux(Centos/RHEL/Fedora) 的 <code>yum</code> 或者 Debian Linux(Debian/Ubuntu) 的 <code>apt-get</code>。 <a href="https://brew.sh/" target="_blank" rel="noopener">Homebrew 的官网</a></p>
+<h3 id="Homebrew-安装"><a href="#Homebrew-安装" class="headerlink" title="Homebrew 安装"></a>Homebrew 安装</h3><p>使用官方提供的方法安装 Homebrew</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">/bin/bash -c <span class="string">"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"</span></span><br></pre></td></tr></table></figure>
+
 <a id="more"></a>
 
-<p>将gitlab上的索引库 添加到本地</p>
-<blockquote>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">pod repo add [索引库在本地的名字] [索引库在远程服务器的地址]</span><br><span class="line"><span class="comment"># 这里用gitlab-specs本地名字为例</span></span><br><span class="line">pod repo add gitlab-specs <span class="symbol">http:</span>/<span class="regexp">/samchiang.com/samchiang</span><span class="regexp">/gitlabSpecs.git</span></span><br></pre></td></tr></table></figure>
-</blockquote>
-<p>这样可以再 ~/.cocoapods/repos 目录下看到 gitlab-specs 仓库</p>
-<hr>
-<h5 id="2-创建Pod项目"><a href="#2-创建Pod项目" class="headerlink" title="2. 创建Pod项目"></a>2. 创建Pod项目</h5><p>用下面的命令创建 pod项目，这里创建个Util 组件库</p>
-<blockquote>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">pod lib create 【pod库的项目名称】</span><br><span class="line"><span class="comment"># 例如</span></span><br><span class="line">pod lib create SCUtil</span><br></pre></td></tr></table></figure>
-</blockquote>
-<hr>
-<h5 id="3-修改Pod项目"><a href="#3-修改Pod项目" class="headerlink" title="3. 修改Pod项目"></a>3. 修改Pod项目</h5><p>可以用Exmaple 编写的pod 库，编写完成后进入第4步</p>
-<hr>
-<h5 id="4-修改-podspec文件，并验证"><a href="#4-修改-podspec文件，并验证" class="headerlink" title="4. 修改*.podspec文件，并验证"></a>4. 修改*.podspec文件，并验证</h5><ul>
-<li><h4 id="如何编写你的-podspec"><a href="#如何编写你的-podspec" class="headerlink" title="如何编写你的.podspec"></a>如何编写你的.podspec</h4><p>  一些常用信息介绍</p>
-<blockquote>
-<p>name：框架名<br>  version：当前版本（注意，是当前版本，假如你后续更新了新版本，需要修改此处）<br>  summary：简要描述，在pod search ZCPKit的时候会显示该信息。<br>  description：详细描述<br>  homepage：页面链接<br>  license：开源协议<br>  author：作者<br>  source：源码git地址<br>  platform：支持最低ios版本<br>  source_files：源文件（可以包含.h和.m）<br>  public_header_files：头文件(.h文件)<br>  resources：资源文件（配置的文件都会被放到mainBundle中）<br>  resource_bundles：资源文件（配置的文件会放到你自己指定的bundle中）<br>  frameworks：依赖的系统框架<br>  vendored_frameworks：依赖的非系统框架<br>  libraries：依赖的系统库<br>  vendored_libraries：依赖的非系统的静态库<br>  dependency：依赖的三方库</p>
-</blockquote>
-</li>
-<li><h4 id="如何实现目录分层"><a href="#如何实现目录分层" class="headerlink" title="如何实现目录分层"></a>如何实现目录分层</h4><p><img src="https://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/WeChat5e07f88b10d442daffce258ac9f8ec8e.png?Expires=1587446709&OSSAccessKeyId=TMP.3KkBREs12Zb6eLL52aC9ESyqTnNw7d8X77WbuieTddGJ32n2Z1HoQd6Vz8TWujDsNsAwN4jq16kzhTLtrfM9qyBnRiyFSM&Signature=xKNPmz8WQPJ647KMUvSjKxfaRss%3D" alt="53082e9beb54d5ec64abacc21f5502c6.png"></p>
-</li>
-</ul>
-<p>Pod目录结构</p>
-<blockquote>
-<p>SCUtil<br>    |<strong>__ ValidUtil<br>    |__</strong> CropUtil</p>
-</blockquote>
-<p>使用 subspec</p>
-<blockquote>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">=========== subspecs 配置  ===========</span><br><span class="line">s.subspece <span class="string">'validUtil'</span> <span class="keyword">do</span> <span class="params">|ss|</span></span><br><span class="line">     <span class="comment">#目录为文件根目录下第一路由</span></span><br><span class="line">     ss.source_files = <span class="string">'ValidUtil/*'</span> </span><br><span class="line"><span class="keyword">end</span></span><br><span class="line"></span><br><span class="line">s.subspec <span class="string">'CropUtil'</span> <span class="keyword">do</span> <span class="params">|ss|</span></span><br><span class="line">   ss.source_files = <span class="string">'CropUtil/*'</span></span><br><span class="line">   <span class="comment">#如果有依赖项添加依赖项,这里假设 CropUtil依赖 ValidUtil</span></span><br><span class="line">   ss.dependency <span class="string">'SCUtil/ValidUtil'</span></span><br><span class="line"><span class="keyword">end</span></span><br></pre></td></tr></table></figure>
-</blockquote>
-<p>其他依赖项和主项目的配置方式是一致的</p>
-<p><a href="https://segmentfault.com/a/1190000012269307" target="_blank" rel="noopener">参考podspec配置文章</a><br><a href="http://www.mengyueping.com/2018/08/16/iOS_CocoaPods_03/" target="_blank" rel="noopener">参考podspec可能错误的文章</a></p>
+<h3 id="使用-brew-install-出现长时间卡顿怎么办？"><a href="#使用-brew-install-出现长时间卡顿怎么办？" class="headerlink" title="使用 brew install 出现长时间卡顿怎么办？"></a>使用 brew install 出现长时间卡顿怎么办？</h3><p>在国内的网络环境下使用 Homebrew 安装软件的过程中可能会出现长时间的卡在 Updating Homebrew 这个步骤上。<br>例如： 执行 brew install composer</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">➜  ~ brew install composer</span><br><span class="line">Updating Homebrew... <span class="comment"># 如果碰到长时间卡在这里，参考以下 2 种处理方法</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>方法一: 按住 control + c  取消本次更新操作</strong></p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">➜  ~ brew install composer</span><br><span class="line">Updating Homebrew...</span><br><span class="line">^C</span><br></pre></td></tr></table></figure>
+
+<p>按住 control + c 之后命令会显示 ^C, 就表示已经取消 <code>Updating Homebrew</code> 操作，跳过这个步骤去执行我们真正需要的安装操作</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">➜  ~ brew install composer</span><br><span class="line">Updating Homebrew...</span><br><span class="line">^C==&gt; Satisfying dependencies</span><br><span class="line">==&gt; Downloading <span class="symbol">https:</span>/<span class="regexp">/getcomposer.org/download</span><span class="regexp">/1.7.2/composer</span>.phar</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p><font color=red>PS: 这个办法是临时性的解决方案</font></p>
+<p><strong>方法二： 使用 Alibaba 的 Homebrew 镜像进行加速</strong></p>
+<p>平时我们执行 <code>brew</code> 命令安装软件的时候，跟一下3个仓库有关：</p>
 <ul>
-<li><h4 id="验证podspec编写是否无误"><a href="#验证podspec编写是否无误" class="headerlink" title="验证podspec编写是否无误"></a>验证podspec编写是否无误</h4></li>
+<li>brew.git</li>
+<li>homoebrew-core.git</li>
+<li>homebrew-bottles.git</li>
 </ul>
-<blockquote>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">pod lib lint</span><br></pre></td></tr></table></figure>
-</blockquote>
-<hr>
-<h5 id="5-建立pod-Git库，将Pod项目代码提交，并添加标签"><a href="#5-建立pod-Git库，将Pod项目代码提交，并添加标签" class="headerlink" title="5. 建立pod Git库，将Pod项目代码提交，并添加标签"></a>5. 建立pod Git库，将Pod项目代码提交，并添加标签</h5><figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">git add .</span><br><span class="line">git commit -m <span class="string">"提交版本描述"</span></span><br><span class="line">git remote add origin 项目仓库地址 <span class="comment"># 注意，这不是Spec Repo私有库的仓库地址！！是pod 私有库的远程地址</span></span><br><span class="line">git push origin master</span><br><span class="line">git tag -m <span class="string">"标签描述"</span> 标签名</span><br><span class="line">git push --tags</span><br></pre></td></tr></table></figure>
+<p>通过更改这 3 个仓库的地址为 Alibaba 提供的地址</p>
+<h4 id="替换-还原-brew-git-仓库地址"><a href="#替换-还原-brew-git-仓库地址" class="headerlink" title="替换/还原 brew.git 仓库地址"></a>替换/还原 brew.git 仓库地址</h4><figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 替换成阿里巴巴的 brew.git 仓库地址:</span></span><br><span class="line">cd <span class="string">"$(brew --repo)"</span></span><br><span class="line">git remote set-url origin <span class="symbol">https:</span>/<span class="regexp">/mirrors.aliyun.com/homebrew</span><span class="regexp">/brew.git</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">#=======================================================</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp"># 还原为官方提供的 brew.git 仓库地址</span></span><br><span class="line"><span class="regexp">cd "$(brew --repo)"</span></span><br><span class="line"><span class="regexp">git remote set-url origin https:/</span><span class="regexp">/github.com/</span>Homebrew/brew.git</span><br></pre></td></tr></table></figure>
 
-<h5 id="6-将-pod库-索引添加到自己的索引库"><a href="#6-将-pod库-索引添加到自己的索引库" class="headerlink" title="6. 将 pod库 索引添加到自己的索引库"></a>6. 将 pod库 索引添加到自己的索引库</h5><p>这里 本地索引库以 gitlab-specs 为例 ,自己的pod私有库以 SCUtil为例</p>
-<figure class="highlight reasonml"><table><tr><td class="code"><pre><span class="line">pod repo push gitlab-specs <span class="module-access"><span class="module"><span class="identifier">SCUtil</span>.</span></span>podspec</span><br></pre></td></tr></table></figure>
+<h4 id="替换-还原-homebrew-core-git-仓库地址"><a href="#替换-还原-homebrew-core-git-仓库地址" class="headerlink" title="替换 / 还原 homebrew-core.git 仓库地址"></a>替换 / 还原 homebrew-core.git 仓库地址</h4><figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 替换成阿里巴巴的 homebrew-core.git 仓库地址:</span></span><br><span class="line">cd <span class="string">"$(brew --repo)/Library/Taps/homebrew/homebrew-core"</span></span><br><span class="line">git remote set-url origin <span class="symbol">https:</span>/<span class="regexp">/mirrors.aliyun.com/homebrew</span><span class="regexp">/homebrew-core.git</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">#=======================================================</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp"># 还原为官方提供的 homebrew-core.git 仓库地址</span></span><br><span class="line"><span class="regexp">cd "$(brew --repo)/</span>Library/Taps/homebrew/homebrew-core<span class="string">"</span></span><br><span class="line"><span class="string">git remote set-url origin https://github.com/Homebrew/homebrew-core.git</span></span><br></pre></td></tr></table></figure>
 
+<h3 id="替换-还原-homebrew-bottles-访问地址"><a href="#替换-还原-homebrew-bottles-访问地址" class="headerlink" title="替换 / 还原 homebrew-bottles 访问地址"></a>替换 / 还原 homebrew-bottles 访问地址</h3><p>这个跟你的 macOS 系统使用的 shell 版本有关系<br>所以，先来查看当前使用 shell 版本</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">echo $SHELL</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果你的输出结果是 /bin/zsh，参考下方的 zsh 终端操作方式</span></span><br><span class="line"><span class="comment"># 如果你的输出结果是 /bin/bash，参考下方的 bash 终端操作方式</span></span><br></pre></td></tr></table></figure>
 
-<h5 id="7-测试"><a href="#7-测试" class="headerlink" title="7. 测试"></a>7. 测试</h5><figure class="highlight awk"><table><tr><td class="code"><pre><span class="line"><span class="regexp">//</span>创建自己的项目，添加podfile</span><br><span class="line">pod init </span><br><span class="line"><span class="regexp">//</span>或者cd到自己pod私有库文件地址，用vim编写也可以 vim podfile </span><br><span class="line"></span><br><span class="line"><span class="regexp">//</span>添加Pod私有索引库</span><br><span class="line">source http:<span class="regexp">//</span>samchiang.com<span class="regexp">/samchiang/gi</span>tlabSpecs.git <span class="regexp">//</span>索引库地址</span><br><span class="line"></span><br><span class="line"><span class="regexp">//</span>添加自己的私有库</span><br><span class="line">pod <span class="string">'SCUtil'</span></span><br><span class="line"></span><br><span class="line"><span class="regexp">//</span>最后执行pod install</span><br><span class="line">pod install</span><br></pre></td></tr></table></figure>]]></content>
+<p><strong>zsh 终端操作方式</strong></p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 替换成阿里巴巴的 homebrew-bottles 访问地址:</span></span><br><span class="line">echo <span class="string">'export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.aliyun.com/homebrew/homebrew-bottles'</span> &gt;&gt; ~<span class="regexp">/.zshrc</span></span><br><span class="line"><span class="regexp">source ~/</span>.zshrc</span><br><span class="line"></span><br><span class="line"><span class="comment">#=======================================================</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 还原为官方提供的 homebrew-bottles 访问地址</span></span><br><span class="line">vi ~<span class="regexp">/.zshrc</span></span><br><span class="line"><span class="regexp"># 然后，删除 HOMEBREW_BOTTLE_DOMAIN 这一行配置</span></span><br><span class="line"><span class="regexp">source ~/</span>.zshrc</span><br></pre></td></tr></table></figure>
+
+<p><strong>bash 终端操作方式</strong></p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 替换 homebrew-bottles 访问 URL:</span></span><br><span class="line">echo <span class="string">'export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.aliyun.com/homebrew/homebrew-bottles'</span> &gt;&gt; ~<span class="regexp">/.bash_profile</span></span><br><span class="line"><span class="regexp">source ~/</span>.bash_profile</span><br><span class="line"></span><br><span class="line"><span class="comment">#=======================================================</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 还原为官方提供的 homebrew-bottles 访问地址</span></span><br><span class="line">vi ~<span class="regexp">/.bash_profile</span></span><br><span class="line"><span class="regexp"># 然后，删除 HOMEBREW_BOTTLE_DOMAIN 这一行配置</span></span><br><span class="line"><span class="regexp">source ~/</span>.bash_profile</span><br></pre></td></tr></table></figure>
+]]></content>
       <categories>
-        <category>iOS</category>
+        <category>工具</category>
       </categories>
+      <tags>
+        <tag>homebrew</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>iOS 开发之 Runtime(一) -- Runtime 环境搭建</title>
+    <url>/2020/05/15/iOS%20%E5%BC%80%E5%8F%91%E4%B9%8B%20Runtime(%E4%B8%80)%20--%20Runtime%20%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
+    <content><![CDATA[<h2 id="什么是Runtime"><a href="#什么是Runtime" class="headerlink" title="什么是Runtime?"></a>什么是Runtime?</h2><p>Runtime 是由 C、 C++、 汇编共共同组成的 为 iOS 提供运行时功能的一套 API, 其中最主要的就是消息机制。<br>可以查看苹果的官网 <a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008048" target="_blank" rel="noopener">Objective-C Runtime Programming Guide</a></p>
+<h3 id="运行时释义"><a href="#运行时释义" class="headerlink" title="运行时释义"></a>运行时释义</h3><ul>
+<li>对比 C，C 语言在函数编译阶段会决定调用哪个函数，Rumtime 是在运行时根据函数的名称查找需要调用的哪个函数。</li>
+</ul>
+<a id="more"></a>
+
+<p>简单举例</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void sayHello() &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line">#import &quot;SCPerson.h&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main(int argc, const char * argv[]) &#123;</span><br><span class="line">    @autoreleasepool &#123;</span><br><span class="line">        &#x2F;&#x2F; insert code here...</span><br><span class="line">        NSLog(@&quot;Hello, World!&quot;);</span><br><span class="line">        sayHello();</span><br><span class="line">        SCPerson *person &#x3D; [[SCPerson alloc] init];</span><br><span class="line">        [person sayHello];</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>在 SCPerson.m 中 没有实现 <code>sayHello</code>, 在编译时，这个并不会报错，但是在运行时，会因为找不到 <code>sayHello</code> 发放报错.</p>
+</blockquote>
+]]></content>
+      <categories>
+        <category>iOS底层原理</category>
+      </categories>
+      <tags>
+        <tag>runtime</tag>
+      </tags>
   </entry>
 </search>
