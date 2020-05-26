@@ -271,29 +271,6 @@
       </tags>
   </entry>
   <entry>
-    <title>iOS 开发之 Runtime(一) -- Runtime 环境搭建</title>
-    <url>/2020/05/15/iOS%20%E5%BC%80%E5%8F%91%E4%B9%8B%20Runtime(%E4%B8%80)%20--%20Runtime%20%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
-    <content><![CDATA[<h2 id="什么是Runtime"><a href="#什么是Runtime" class="headerlink" title="什么是Runtime?"></a>什么是Runtime?</h2><p>Runtime 是由 C、 C++、 汇编共共同组成的 为 iOS 提供运行时功能的一套 API, 其中最主要的就是消息机制。<br>可以查看苹果的官网 <a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008048" target="_blank" rel="noopener">Objective-C Runtime Programming Guide</a></p>
-<h3 id="运行时释义"><a href="#运行时释义" class="headerlink" title="运行时释义"></a>运行时释义</h3><ul>
-<li>对比 C，C 语言在函数编译阶段会决定调用哪个函数，Rumtime 是在运行时根据函数的名称查找需要调用的哪个函数。</li>
-</ul>
-<a id="more"></a>
-
-<p>简单举例</p>
-<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">void sayHello() &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line">#import &quot;SCPerson.h&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main(int argc, const char * argv[]) &#123;</span><br><span class="line">    @autoreleasepool &#123;</span><br><span class="line">        &#x2F;&#x2F; insert code here...</span><br><span class="line">        NSLog(@&quot;Hello, World!&quot;);</span><br><span class="line">        sayHello();</span><br><span class="line">        SCPerson *person &#x3D; [[SCPerson alloc] init];</span><br><span class="line">        [person sayHello];</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>在 SCPerson.m 中 没有实现 <code>sayHello</code>, 在编译时，这个并不会报错，但是在运行时，会因为找不到 <code>sayHello</code> 发放报错.</p>
-</blockquote>
-]]></content>
-      <categories>
-        <category>iOS底层原理</category>
-      </categories>
-      <tags>
-        <tag>runtime</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>homebrew安装及相关问题解决</title>
     <url>/2019/07/15/homebrew-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/</url>
     <content><![CDATA[<h3 id="什么是Homebrew"><a href="#什么是Homebrew" class="headerlink" title="什么是Homebrew"></a>什么是Homebrew</h3><p>Homebrew 是 Mac OS 的一种包管理工具，相当于 Redhat Linux(Centos/RHEL/Fedora) 的 <code>yum</code> 或者 Debian Linux(Debian/Ubuntu) 的 <code>apt-get</code>。 <a href="https://brew.sh/" target="_blank" rel="noopener">Homebrew 的官网</a></p>
@@ -338,6 +315,230 @@
       </categories>
       <tags>
         <tag>homebrew</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>iOS 开发之 Runtime(一) -- Runtime 初识</title>
+    <url>/2020/05/15/iOS%20%E5%BC%80%E5%8F%91%E4%B9%8B%20Runtime(%E4%B8%80)%20--%20Runtime%E5%88%9D%E8%AF%86/</url>
+    <content><![CDATA[<h2 id="什么是Runtime"><a href="#什么是Runtime" class="headerlink" title="什么是Runtime?"></a>什么是Runtime?</h2><p>Runtime 是由 C、 C++、 汇编共共同组成的 为 iOS 提供运行时功能的一套 API, 其中最主要的就是消息机制。<br>可以查看苹果的官网 <a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008048" target="_blank" rel="noopener">Objective-C Runtime Programming Guide</a></p>
+<a id="more"></a>
+<h3 id="运行时释义"><a href="#运行时释义" class="headerlink" title="运行时释义"></a>运行时释义</h3><ul>
+<li>运行时，是在代码运行的时候，将对象等装载到内存中，通过方法名动态查找实现的函数。</li>
+<li>对比 C，C 语言在函数编译阶段会决定调用哪个函数，Rumtime 是在运行时根据函数的名称查找需要调用的哪个函数。</li>
+</ul>
+<h3 id="编译时释义"><a href="#编译时释义" class="headerlink" title="编译时释义"></a>编译时释义</h3><p>编译时就是在编译器，将高级语言编译成可以被计算机识别的机器语言。</p>
+<h3 id="Runtime-的底层库关系"><a href="#Runtime-的底层库关系" class="headerlink" title="Runtime 的底层库关系"></a>Runtime 的底层库关系</h3><p><img src="https://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/Runtime%E5%BA%95%E5%B1%82%E5%BA%93%E5%85%B3%E7%B3%BB.png" alt="Runtime 底层库的关系"></p>
+<h3 id="Runtime-解析"><a href="#Runtime-解析" class="headerlink" title="Runtime 解析"></a>Runtime 解析</h3><p>简单举例</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></span><br><span class="line"><span class="meta">#import <span class="meta-string">"SCPerson.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> sayHello() &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%s"</span>, __func__);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[]) &#123;</span><br><span class="line">    <span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">        <span class="comment">// insert code here...</span></span><br><span class="line">        SCPerson *person = [[SCPerson alloc] init];</span><br><span class="line">        [person sayHello];</span><br><span class="line">        sayHello();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>在 SCPerson.m 中 没有实现 <code>sayHello</code>, 在编译时，这个并不会报错，但是在运行时，会因为找不到 <code>sayHello</code> 发放报错.</p>
+</blockquote>
+<p>利用 <code>clang</code> 来编译 <code>main.m</code> 文件，来查看底层代码</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 这个是简单的编译</span></span><br><span class="line">clang -rewrite-objc main.m -o main.cpp </span><br><span class="line"></span><br><span class="line"><span class="comment"># 这种编译方式可以,减少警告</span></span><br><span class="line">xcrun -sdk iphoneos clang -arch arm64 -rewrite main.m -o main.c++</span><br></pre></td></tr></table></figure>
+<p>我们可以看下编译过后 C 代码如下：</p>
+<p><img src="https://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/MainClang-Rumtime.jpg" alt="Main-Clang-Rumtime"></p>
+<p>其中</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</span><br><span class="line">    <span class="comment">/* @autoreleasepool */</span> &#123; __AtAutoreleasePool __autoreleasepool; </span><br><span class="line">        SCPerson *person = ((SCPerson *(*)(id, SEL))(<span class="keyword">void</span> *)objc_msgSend)((id)((SCPerson *(*)(id, SEL))(<span class="keyword">void</span> *)objc_msgSend)((id)objc_getClass(<span class="string">"SCPerson"</span>), sel_registerName(<span class="string">"alloc"</span>)), sel_registerName(<span class="string">"init"</span>));</span><br><span class="line">        ((<span class="keyword">void</span> (*)(id, SEL))(<span class="keyword">void</span> *)objc_msgSend)((id)person, sel_registerName(<span class="string">"sayHello"</span>));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出 Objective-C 调用方法的本质是通过 <code>objc_messageSend</code> 通过方法名 <code>sel_registerName</code>, 调用对象的实例方法。所以我们可以看出<code>OC 方法的本质</code>其实就是发送消息</p>
+<blockquote>
+<p><code>(id)objc_getClass(&quot;SCPerson&quot;)</code> 这个就是消息接受者<br><code>sel_registerName(&quot;alloc&quot;)</code> 这个就是方法编号</p>
+</blockquote>
+<p>通过</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">objc_object</span> <span class="title">SCPerson</span>;</span></span><br></pre></td></tr></table></figure>
+<p>可以看出 <code>OC 对象</code>的本质，其实是一个结构体.</p>
+<p><strong>带着问题看本质</strong></p>
+<ul>
+<li>如何通过方法编号，查询到方法</li>
+</ul>
+<p>为了更方便我们查看方法的本质，我们最好先搭建一套 <a href="/2020/05/18/Rumtime-%E7%9A%84%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" title="Rumtime 的环境搭建">Rumtime 的环境搭建</a> 的环境</p>
+]]></content>
+      <categories>
+        <category>iOS底层原理</category>
+      </categories>
+      <tags>
+        <tag>runtime</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Rumtime 的环境搭建</title>
+    <url>/2020/05/18/Rumtime-%E7%9A%84%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
+    <content><![CDATA[<p>苹果在 <a href="https://opensource.apple.com/" target="_blank" rel="noopener">OpenSource</a> 官网 上开放了一部分源码，我们可以同过这个官网，下载我们所需要的东西，比如 objc 的源码，通过源码能够方便我们了解iOS的底层原理。想要快速的了解我们的 <code>runtime</code>，搭建一个可以编译调试的 <code>runtime</code> ，能够向我们的效率倍增。下面对针对最新的 <code>objc4-781.2</code> 进行编译</p>
+<a id="more"></a>
+
+<h4 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h4><ul>
+<li>mac OS 10.15</li>
+<li>Xcode 11</li>
+<li>objc4-781.2</li>
+<li>dyld-733.8</li>
+<li>Libc-1353.60.8</li>
+<li>Libc-825.40.1 2</li>
+<li>launchd-106.10</li>
+<li>libauto-187</li>
+<li>libclosure-74</li>
+<li>libdispatch-1173.60.1</li>
+<li>libplatform-220</li>
+<li>libpthread-416.60.2</li>
+<li>xnu-6153.81.5</li>
+</ul>
+<p>以上资料都可以通过 <a href="https://opensource.apple.com/" target="_blank" rel="noopener">Apple source</a> 获取。</p>
+<p>将文件解压到同一个目录中，这里用 <code>OpenSource</code> 来作为示例。</p>
+<p><img src="" alt="OpenSource目录结构"></p>
+<h4 id="开始配置"><a href="#开始配置" class="headerlink" title="开始配置"></a>开始配置</h4><p>直接编译 ojbc4-781.2 会出现如下报错</p>
+<blockquote>
+<p>unable to find sdk ‘macosx.internal’</p>
+</blockquote>
+<p>更改 <code>Build Settings</code> 里的 <code>Base SDK</code> 选项卡的内容 </p>
+<blockquote>
+<p>解决 i386 报错， 将 <code>objc-trampolines</code> 中的 <code>Build Setting</code> 选项 <code>Architectures</code> 中的值切换为 <code>Standard Architectures(64-bit Intel)</code></p>
+</blockquote>
+<p>重新编译</p>
+<p><strong>文件查漏补缺</strong></p>
+<p>这个时候会提示 <code>&#39;sys/reason.h&#39; file not found</code> 错误, 如下图：</p>
+<p><img src="" alt="reason-no-found"></p>
+<p>在项目目录下创建一个 <code>include</code> 文件夹，用于存放需要导入工程的文件，并且把它添加到项目 <code>Header search Paths</code> 中。操作步骤 <code>objc-&gt;TARGETS-&gt;ojbc-&gt; Build Settings</code> 搜索 <code>header search paths</code> 添加 <code>$(SRCROOT)/include</code></p>
+<p>接下来，我们用命令 <code>cd</code> 到 <code>OpenSource</code> 文件夹中 (PS: <code>OpenSource</code> 文件夹存放了准备工作中下载的文件). 通过 <code>find . -name &#39;reason.h&#39;</code> 命令去查找 <code>sys/reason.h</code> 文件. 确认文件个数和名字是否正确，通过以下命令去移动工程所需的文件到 <code>include</code> 文件夹中</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">cd [OpenSource文件夹的路径]</span><br><span class="line">finde . -name <span class="string">'reason.h'</span> <span class="params">| xargs -I '&#123;&#125;' mv &#123;&#125; [<span class="keyword">include</span>的文件夹路径]</span></span><br></pre></td></tr></table></figure>
+
+<p>根据提示一次将下列文件按照上面的方法导入到 <code>objc4-781.2</code> 里的 <code>include</code> 文件夹中</p>
+<ul>
+<li><code>&lt;sys/reason.h&gt;</code></li>
+<li><code>&lt;mach-o/dyld_priv.h&gt;</code></li>
+<li><code>&lt;os/lock_private.h&gt;</code></li>
+<li><code>&lt;os/base_private.h&gt;</code></li>
+<li><code>&lt;pthread/tsd_private.h&gt;</code></li>
+<li><code>&lt;System/machine/cpu_capabilities.h&gt;</code> 这个选择 <code>./xnu-6153.81.5/osfmk/machine/cpu_capabilities.h</code></li>
+<li><code>&lt;os/tsd.h&gt;</code> 这个选择 <code>./xnu-6153.81.5/libsyscall/os/tsd.h</code></li>
+<li><code>&lt;pthread/spinlock_private.h&gt;</code> </li>
+<li><code>&lt;System/pthread_machdep.h&gt;</code> 这个文件在 <code>Libc-825.40.1</code> 中可以找到，在最新的 <code>Libc</code> 中会找不到</li>
+<li><code>&lt;CrashReporterClient.h&gt;</code> 这个文件在 <code>Libc-825.40.1</code> 中可以周到，在最新的 <code>Libc</code> 中会找不到,导入后依旧异常，查看下面的 <strong>CrashReporterClient 异常处理</strong></li>
+<li><code>&lt;objc-shared-cache.h&gt;</code></li>
+<li><code>&lt;_simple.h&gt;</code> 这个文件夹在 <code>Libc-825.40.1</code> 和 <code>libplatform-220</code> 文件夹中都存在，这里选择 <code>libplatform-220</code> 这个文件夹中的 <code>_simple.h</code> 文件</li>
+</ul>
+<p><strong>CrashReporterClient 异常处理</strong></p>
+<blockquote>
+<p><code>CrashReporterClient.h</code> 文件导入后，依旧会提示错误 <code>file not found</code> 错误， 需要再 <code>Build Settings</code> -&gt; <code>Preprocessor Macros</code> 中加入: <code>LIBC_NO_LIBCRASHREPORTERCLIENT</code></p>
+</blockquote>
+<p><strong>其他异常处理</strong></p>
+<p>编译时提示 <code>typedef redefinition with different types (&#39;int&#39; vs &#39;volatile OSSpinLock&#39; (aka &#39;volatile int&#39;))</code>, 在 <code>include</code> 文件夹下，使用 <code>grep</code> 命令，查找重复定义的文件</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">grep -rne "typedef.*pthread_lock_t" .</span><br><span class="line"><span class="meta">#</span><span class="bash"> . 表示查找当前文件</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 输出</span></span><br><span class="line"></span><br><span class="line">./pthread/spinlock_private.h:59:typedef volatile OSSpinLock pthread_lock_t __deprecated_msg("Use &lt;os/lock.h&gt; instead");</span><br><span class="line">./System/pthread_machdep.h:214:typedef int pthread_lock_t;</span><br></pre></td></tr></table></figure>
+
+<p>这里我们选择注释掉 <code>pthread_machdep.h</code> 文件中的定义即可.</p>
+<p>同样 提示 <code>Static declaration of &#39;_pthread_has_direct_tsd&#39; follows non-static declaration</code> 我们也通过 <code>grep</code> 命令查重</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">grep -rne "_pthread_has_direct_tsd(void)" .</span><br><span class="line"><span class="meta">#</span><span class="bash"> 输出</span></span><br><span class="line">./pthread/tsd_private.h:273:_pthread_has_direct_tsd(void)</span><br><span class="line">./System/pthread_machdep.h:217:_pthread_has_direct_tsd(void)</span><br><span class="line"></span><br><span class="line"> grep -rne "_pthread_getspecific_direct(unsigned long slot)" .</span><br><span class="line"><span class="meta"> #</span><span class="bash"> 输出</span></span><br><span class="line"> ./pthread/tsd_private.h:284:_pthread_getspecific_direct(unsigned long slot)</span><br><span class="line">./System/pthread_machdep.h:244:_pthread_getspecific_direct(unsigned long slot)</span><br></pre></td></tr></table></figure>]]></content>
+      <categories>
+        <category>iOS底层原理</category>
+      </categories>
+      <tags>
+        <tag>runtime</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>iTerm2 及 Oh My Zsh 配置</title>
+    <url>/2019/07/15/iterm2-oh-my-zsh-config/</url>
+    <content><![CDATA[<h2 id="1-iTerm2-配置"><a href="#1-iTerm2-配置" class="headerlink" title="1 iTerm2 配置"></a>1 iTerm2 配置</h2><h3 id="1-1-安装-iTerm2"><a href="#1-1-安装-iTerm2" class="headerlink" title="1.1 安装 iTerm2"></a>1.1 安装 iTerm2</h3><ul>
+<li><p><code>homebrew</code> 安装<br><code>$ brew cask install iterm2</code></p>
+</li>
+<li><p>下载执行文件，将其拖到 <code>Applications</code> 文件夹下,下载地址<a href="https://www.iterm2.com/downloads.html" target="_blank" rel="noopener">iTerm2官网</a></p>
+<a id="more"></a>
+<h3 id="1-2-设置-iTerm2-的主题"><a href="#1-2-设置-iTerm2-的主题" class="headerlink" title="1.2 设置 iTerm2 的主题"></a>1.2 设置 iTerm2 的主题</h3><p>可以通过<a href="https://iterm2colorschemes.com/" target="_blank" rel="noopener">iTerm2主题官网</a>下载自己喜欢的额主题<br>下载完毕后，先解压缩，然后打卡 <code>iTerm2</code> 按 <code>Command</code> + <code>,</code>  键， 打开 <code>Preferences</code> 配置界面， 然后<code>Profiles -&gt; Colors -&gt; Color Presets -&gt; Import</code> 导入文件， 导入成功后，选择所下载的主题，就可以了</p>
+</li>
+</ul>
+<h2 id="2-配置-Oh-My-Zsh"><a href="#2-配置-Oh-My-Zsh" class="headerlink" title="2 配置 Oh-My-Zsh"></a>2 配置 Oh-My-Zsh</h2><p><code>oh-my-zsh</code> 是对主题的另一种夸张，<a href="https://github.com/robbyrussell/oh-my-zsh" target="_blank" rel="noopener">oh-my-zsh Github 地址</a></p>
+<p>一键安装方式：</p>
+<figure class="highlight powershell"><table><tr><td class="code"><pre><span class="line"><span class="variable">$</span> sh <span class="literal">-c</span> <span class="string">"<span class="variable">$</span>(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"</span></span><br></pre></td></tr></table></figure>
+<p>使用 <code>oh-my-zsh</code> 必须确定当前用户的使用的 <code>Shell</code> 是 <code>zsh</code>， MacOS 10.15 默认使用的是 <code>zsh</code>, 10.15 之前 默认使用的 是<code>bash</code><br>我们可以通过下面命令进行 <code>Shell 切换</code></p>
+<figure class="highlight awk"><table><tr><td class="code"><pre><span class="line">$ chsh -s <span class="regexp">/bin/</span>zsh</span><br></pre></td></tr></table></figure>
+
+<p>常见的 <code>Shell</code> 我们可以通过</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">cd</span> /private/etc</span></span><br><span class="line"><span class="meta">$</span><span class="bash"> cat shells</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 输出</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> List of acceptable shells <span class="keyword">for</span> chpass(1).</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> Ftpd will not allow users to connect who are not using</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> one of these shells.</span></span><br><span class="line"></span><br><span class="line">/bin/bash</span><br><span class="line">/bin/csh</span><br><span class="line">/bin/dash</span><br><span class="line">/bin/ksh</span><br><span class="line">/bin/sh</span><br><span class="line">/bin/tcsh</span><br><span class="line">/bin/zsh</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-1-修改-zshrc-文件，配置主题"><a href="#2-1-修改-zshrc-文件，配置主题" class="headerlink" title="2.1 修改 .zshrc 文件，配置主题"></a>2.1 修改 .zshrc 文件，配置主题</h3><p>我们通过 <code>vim ~/.zshrc</code> 文件， 将主题配置修改为 <code>ZSH_THEME=&quot;agnoster&quot;</code> 这里 <code>agnoster</code> 是比较常见的 <code>oh-my-zsh</code> 主题。我们可以 <a href="https://github.com/robbyrussell/oh-my-zsh/wiki/themes" target="_blank" rel="noopener">oh-my-zsh</a> 网站，挑选自己喜欢的主题<br><code>agnoster</code> 主题配置后，有出现某些字符乱码的现象，我们要通过配置 <code>Meslo LG M Regualar for Powerline.tff</code> 字体，来解决。下载好了后，直接在 <code>Mac OS</code> 中安装，然后在 iTerm2 <code>Command + ,</code> 打开 <code>Preferences</code>配置界面，然后 <code>Profiles -&gt; Text -&gt; Font</code>， 选择 <code>Meslo LG M Regular for Powerline</code> 字体.</p>
+<h2 id="3-配置插件"><a href="#3-配置插件" class="headerlink" title="3 配置插件"></a>3 配置插件</h2><h3 id="3-1-配置高亮插件"><a href="#3-1-配置高亮插件" class="headerlink" title="3.1 配置高亮插件"></a>3.1 配置高亮插件</h3><figure class="highlight mipsasm"><table><tr><td class="code"><pre><span class="line">$ <span class="keyword">brew </span><span class="keyword">install </span>zsh-syntax-highlighting</span><br></pre></td></tr></table></figure>
+<p>安装成功后， 编辑 <code>vim ~/.zshrc</code> 文件， 在最后一行添加:</p>
+<figure class="highlight gradle"><table><tr><td class="code"><pre><span class="line"><span class="keyword">source</span> <span class="regexp">/usr/</span>local<span class="regexp">/share/</span>zsh-syntax-highlighting<span class="regexp">/zsh-syntax-highlighting.zsh</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-配置自动填充-可选"><a href="#3-2-配置自动填充-可选" class="headerlink" title="3.2 配置自动填充(可选)"></a>3.2 配置自动填充(可选)</h3><p>这个功能非常爽，可以方便我们快速的敲命令<br>配置步骤</p>
+<blockquote>
+<p>克隆 <code>zsh-autosuggestions</code> 项目，到指定目录<br>然后编辑 <code>vim ~/.zshrc</code> 文件，找到 <code>plugins</code>配置， 添加 <code>zsh-autosuggestions</code> 插件</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> git <span class="built_in">clone</span> https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 添加到 plugins</span></span><br><span class="line">plugins=(git zsh-autosuggestions)</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-隐藏用户名"><a href="#3-3-隐藏用户名" class="headerlink" title="3.3 隐藏用户名"></a>3.3 隐藏用户名</h3><p>通过编辑 <code>vim ~/.zshrc</code> 添加</p>
+<figure class="highlight ini"><table><tr><td class="code"><pre><span class="line"><span class="attr">DEFUALT_USER</span>=<span class="string">"&#123;这里填写你的用户名&#125;"</span></span><br></pre></td></tr></table></figure>
+<p>如何查看自己的用户名，可以通过 <code>whoami</code> 查看</p>
+<h2 id="4-iTerm2-配置代理"><a href="#4-iTerm2-配置代理" class="headerlink" title="4 iTerm2 配置代理"></a>4 iTerm2 配置代理</h2><p>通过编辑 <code>vim ~/.zshrc</code>，添加代理，配合代理工具使用</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> proxy list</span></span><br><span class="line">alias proxy='export all_proxy=socks5://127.0.0.1:1086'</span><br><span class="line">alias unproxy='unset all_proxy'</span><br></pre></td></tr></table></figure>
+<p>通过</p>
+<figure class="highlight routeros"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 启动</span></span><br><span class="line">$<span class="built_in"> proxy </span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 卸载代理</span></span><br><span class="line">$ unproxy</span><br></pre></td></tr></table></figure>
+
+<h2 id="5-iTerm2-快捷命令"><a href="#5-iTerm2-快捷命令" class="headerlink" title="5 iTerm2 快捷命令"></a>5 iTerm2 快捷命令</h2><table>
+<thead>
+<tr>
+<th>命令</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>command + t</td>
+<td>新建标签</td>
+</tr>
+<tr>
+<td>command + w</td>
+<td>新建标签</td>
+</tr>
+<tr>
+<td>command + return</td>
+<td>切换全屏</td>
+</tr>
+<tr>
+<td>command + f</td>
+<td>查找</td>
+</tr>
+<tr>
+<td>command + d</td>
+<td>垂直分屏</td>
+</tr>
+<tr>
+<td>command + shift + d</td>
+<td>水平分屏</td>
+</tr>
+<tr>
+<td>command + shift + h</td>
+<td>查看剪切板历史</td>
+</tr>
+<tr>
+<td>ctrl + u</td>
+<td>清除当前行</td>
+</tr>
+<tr>
+<td>ctrl + i</td>
+<td>清屏</td>
+</tr>
+<tr>
+<td>ctrl + a</td>
+<td>到行首</td>
+</tr>
+<tr>
+<td>ctrl + e</td>
+<td>到行尾</td>
+</tr>
+<tr>
+<td>ctrl + f/b</td>
+<td>前进后退</td>
+</tr>
+<tr>
+<td>ctrl + r</td>
+<td>搜索历史命令</td>
+</tr>
+</tbody></table>
+]]></content>
+      <categories>
+        <category>工具</category>
+      </categories>
+      <tags>
+        <tag>iterm2 oh-my-zsh</tag>
       </tags>
   </entry>
 </search>

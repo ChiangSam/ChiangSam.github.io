@@ -22,20 +22,20 @@
     var CONFIG = {"hostname":"samchiang.cn","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="什么是Runtime?Runtime 是由 C、 C++、 汇编共共同组成的 为 iOS 提供运行时功能的一套 API, 其中最主要的就是消息机制。可以查看苹果的官网 Objective-C Runtime Programming Guide 运行时释义 对比 C，C 语言在函数编译阶段会决定调用哪个函数，Rumtime 是在运行时根据函数的名称查找需要调用的哪个函数。">
+  <meta name="description" content="苹果在 OpenSource 官网 上开放了一部分源码，我们可以同过这个官网，下载我们所需要的东西，比如 objc 的源码，通过源码能够方便我们了解iOS的底层原理。想要快速的了解我们的 runtime，搭建一个可以编译调试的 runtime ，能够向我们的效率倍增。下面对针对最新的 objc4-781.2 进行编译">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS 开发之 Runtime(一) -- Runtime 环境搭建">
-<meta property="og:url" content="https://samchiang.cn/2020/05/15/iOS%20%E5%BC%80%E5%8F%91%E4%B9%8B%20Runtime(%E4%B8%80)%20--%20Runtime%20%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/index.html">
+<meta property="og:title" content="Rumtime 的环境搭建">
+<meta property="og:url" content="https://samchiang.cn/2020/05/18/Rumtime-%E7%9A%84%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/index.html">
 <meta property="og:site_name" content="SamChiang">
-<meta property="og:description" content="什么是Runtime?Runtime 是由 C、 C++、 汇编共共同组成的 为 iOS 提供运行时功能的一套 API, 其中最主要的就是消息机制。可以查看苹果的官网 Objective-C Runtime Programming Guide 运行时释义 对比 C，C 语言在函数编译阶段会决定调用哪个函数，Rumtime 是在运行时根据函数的名称查找需要调用的哪个函数。">
+<meta property="og:description" content="苹果在 OpenSource 官网 上开放了一部分源码，我们可以同过这个官网，下载我们所需要的东西，比如 objc 的源码，通过源码能够方便我们了解iOS的底层原理。想要快速的了解我们的 runtime，搭建一个可以编译调试的 runtime ，能够向我们的效率倍增。下面对针对最新的 objc4-781.2 进行编译">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2020-05-15T07:14:12.000Z">
-<meta property="article:modified_time" content="2020-05-16T04:33:06.471Z">
+<meta property="article:published_time" content="2020-05-18T15:23:09.000Z">
+<meta property="article:modified_time" content="2020-05-26T04:46:52.576Z">
 <meta property="article:author" content="SamChiang">
 <meta property="article:tag" content="runtime">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://samchiang.cn/2020/05/15/iOS%20%E5%BC%80%E5%8F%91%E4%B9%8B%20Runtime(%E4%B8%80)%20--%20Runtime%20%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">
+<link rel="canonical" href="https://samchiang.cn/2020/05/18/Rumtime-%E7%9A%84%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">
 
 
 <script id="page-configurations">
@@ -48,7 +48,7 @@
   };
 </script>
 
-  <title>iOS 开发之 Runtime(一) -- Runtime 环境搭建 | SamChiang</title>
+  <title>Rumtime 的环境搭建 | SamChiang</title>
   
 
 
@@ -191,7 +191,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://samchiang.cn/2020/05/15/iOS%20%E5%BC%80%E5%8F%91%E4%B9%8B%20Runtime(%E4%B8%80)%20--%20Runtime%20%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">
+    <link itemprop="mainEntityOfPage" href="https://samchiang.cn/2020/05/18/Rumtime-%E7%9A%84%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/%E5%A4%B4%E5%83%8F.png">
@@ -204,7 +204,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          iOS 开发之 Runtime(一) -- Runtime 环境搭建
+          Rumtime 的环境搭建
         </h1>
 
         <div class="post-meta">
@@ -214,14 +214,14 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-05-15 15:14:12" itemprop="dateCreated datePublished" datetime="2020-05-15T15:14:12+08:00">2020-05-15</time>
+              <time title="创建时间：2020-05-18 23:23:09" itemprop="dateCreated datePublished" datetime="2020-05-18T23:23:09+08:00">2020-05-18</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-05-16 12:33:06" itemprop="dateModified" datetime="2020-05-16T12:33:06+08:00">2020-05-16</time>
+                <time title="修改时间：2020-05-26 12:46:52" itemprop="dateModified" datetime="2020-05-26T12:46:52+08:00">2020-05-26</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -246,14 +246,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>579</span>
+              <span>2.7k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>1 分钟</span>
+              <span>2 分钟</span>
             </span>
 
         </div>
@@ -265,19 +265,69 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="什么是Runtime"><a href="#什么是Runtime" class="headerlink" title="什么是Runtime?"></a>什么是Runtime?</h2><p>Runtime 是由 C、 C++、 汇编共共同组成的 为 iOS 提供运行时功能的一套 API, 其中最主要的就是消息机制。<br>可以查看苹果的官网 <a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008048" target="_blank" rel="noopener">Objective-C Runtime Programming Guide</a></p>
-<h3 id="运行时释义"><a href="#运行时释义" class="headerlink" title="运行时释义"></a>运行时释义</h3><ul>
-<li>对比 C，C 语言在函数编译阶段会决定调用哪个函数，Rumtime 是在运行时根据函数的名称查找需要调用的哪个函数。</li>
-</ul>
+        <p>苹果在 <a href="https://opensource.apple.com/" target="_blank" rel="noopener">OpenSource</a> 官网 上开放了一部分源码，我们可以同过这个官网，下载我们所需要的东西，比如 objc 的源码，通过源码能够方便我们了解iOS的底层原理。想要快速的了解我们的 <code>runtime</code>，搭建一个可以编译调试的 <code>runtime</code> ，能够向我们的效率倍增。下面对针对最新的 <code>objc4-781.2</code> 进行编译</p>
 <a id="more"></a>
 
-<p>简单举例</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">void sayHello() &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line">#import &quot;SCPerson.h&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int main(int argc, const char * argv[]) &#123;</span><br><span class="line">    @autoreleasepool &#123;</span><br><span class="line">        &#x2F;&#x2F; insert code here...</span><br><span class="line">        NSLog(@&quot;Hello, World!&quot;);</span><br><span class="line">        sayHello();</span><br><span class="line">        SCPerson *person &#x3D; [[SCPerson alloc] init];</span><br><span class="line">        [person sayHello];</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<h4 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h4><ul>
+<li>mac OS 10.15</li>
+<li>Xcode 11</li>
+<li>objc4-781.2</li>
+<li>dyld-733.8</li>
+<li>Libc-1353.60.8</li>
+<li>Libc-825.40.1 2</li>
+<li>launchd-106.10</li>
+<li>libauto-187</li>
+<li>libclosure-74</li>
+<li>libdispatch-1173.60.1</li>
+<li>libplatform-220</li>
+<li>libpthread-416.60.2</li>
+<li>xnu-6153.81.5</li>
+</ul>
+<p>以上资料都可以通过 <a href="https://opensource.apple.com/" target="_blank" rel="noopener">Apple source</a> 获取。</p>
+<p>将文件解压到同一个目录中，这里用 <code>OpenSource</code> 来作为示例。</p>
+<p><img src="" alt="OpenSource目录结构"></p>
+<h4 id="开始配置"><a href="#开始配置" class="headerlink" title="开始配置"></a>开始配置</h4><p>直接编译 ojbc4-781.2 会出现如下报错</p>
 <blockquote>
-<p>在 SCPerson.m 中 没有实现 <code>sayHello</code>, 在编译时，这个并不会报错，但是在运行时，会因为找不到 <code>sayHello</code> 发放报错.</p>
+<p>unable to find sdk ‘macosx.internal’</p>
 </blockquote>
+<p>更改 <code>Build Settings</code> 里的 <code>Base SDK</code> 选项卡的内容 </p>
+<blockquote>
+<p>解决 i386 报错， 将 <code>objc-trampolines</code> 中的 <code>Build Setting</code> 选项 <code>Architectures</code> 中的值切换为 <code>Standard Architectures(64-bit Intel)</code></p>
+</blockquote>
+<p>重新编译</p>
+<p><strong>文件查漏补缺</strong></p>
+<p>这个时候会提示 <code>&#39;sys/reason.h&#39; file not found</code> 错误, 如下图：</p>
+<p><img src="" alt="reason-no-found"></p>
+<p>在项目目录下创建一个 <code>include</code> 文件夹，用于存放需要导入工程的文件，并且把它添加到项目 <code>Header search Paths</code> 中。操作步骤 <code>objc-&gt;TARGETS-&gt;ojbc-&gt; Build Settings</code> 搜索 <code>header search paths</code> 添加 <code>$(SRCROOT)/include</code></p>
+<p>接下来，我们用命令 <code>cd</code> 到 <code>OpenSource</code> 文件夹中 (PS: <code>OpenSource</code> 文件夹存放了准备工作中下载的文件). 通过 <code>find . -name &#39;reason.h&#39;</code> 命令去查找 <code>sys/reason.h</code> 文件. 确认文件个数和名字是否正确，通过以下命令去移动工程所需的文件到 <code>include</code> 文件夹中</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd [OpenSource文件夹的路径]</span><br><span class="line">finde . -name <span class="string">'reason.h'</span> <span class="params">| xargs -I '&#123;&#125;' mv &#123;&#125; [<span class="keyword">include</span>的文件夹路径]</span></span><br></pre></td></tr></table></figure>
 
+<p>根据提示一次将下列文件按照上面的方法导入到 <code>objc4-781.2</code> 里的 <code>include</code> 文件夹中</p>
+<ul>
+<li><code>&lt;sys/reason.h&gt;</code></li>
+<li><code>&lt;mach-o/dyld_priv.h&gt;</code></li>
+<li><code>&lt;os/lock_private.h&gt;</code></li>
+<li><code>&lt;os/base_private.h&gt;</code></li>
+<li><code>&lt;pthread/tsd_private.h&gt;</code></li>
+<li><code>&lt;System/machine/cpu_capabilities.h&gt;</code> 这个选择 <code>./xnu-6153.81.5/osfmk/machine/cpu_capabilities.h</code></li>
+<li><code>&lt;os/tsd.h&gt;</code> 这个选择 <code>./xnu-6153.81.5/libsyscall/os/tsd.h</code></li>
+<li><code>&lt;pthread/spinlock_private.h&gt;</code> </li>
+<li><code>&lt;System/pthread_machdep.h&gt;</code> 这个文件在 <code>Libc-825.40.1</code> 中可以找到，在最新的 <code>Libc</code> 中会找不到</li>
+<li><code>&lt;CrashReporterClient.h&gt;</code> 这个文件在 <code>Libc-825.40.1</code> 中可以周到，在最新的 <code>Libc</code> 中会找不到,导入后依旧异常，查看下面的 <strong>CrashReporterClient 异常处理</strong></li>
+<li><code>&lt;objc-shared-cache.h&gt;</code></li>
+<li><code>&lt;_simple.h&gt;</code> 这个文件夹在 <code>Libc-825.40.1</code> 和 <code>libplatform-220</code> 文件夹中都存在，这里选择 <code>libplatform-220</code> 这个文件夹中的 <code>_simple.h</code> 文件</li>
+</ul>
+<p><strong>CrashReporterClient 异常处理</strong></p>
+<blockquote>
+<p><code>CrashReporterClient.h</code> 文件导入后，依旧会提示错误 <code>file not found</code> 错误， 需要再 <code>Build Settings</code> -&gt; <code>Preprocessor Macros</code> 中加入: <code>LIBC_NO_LIBCRASHREPORTERCLIENT</code></p>
+</blockquote>
+<p><strong>其他异常处理</strong></p>
+<p>编译时提示 <code>typedef redefinition with different types (&#39;int&#39; vs &#39;volatile OSSpinLock&#39; (aka &#39;volatile int&#39;))</code>, 在 <code>include</code> 文件夹下，使用 <code>grep</code> 命令，查找重复定义的文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">grep -rne "typedef.*pthread_lock_t" .</span><br><span class="line"><span class="meta">#</span><span class="bash"> . 表示查找当前文件</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 输出</span></span><br><span class="line"></span><br><span class="line">./pthread/spinlock_private.h:59:typedef volatile OSSpinLock pthread_lock_t __deprecated_msg("Use &lt;os/lock.h&gt; instead");</span><br><span class="line">./System/pthread_machdep.h:214:typedef int pthread_lock_t;</span><br></pre></td></tr></table></figure>
+
+<p>这里我们选择注释掉 <code>pthread_machdep.h</code> 文件中的定义即可.</p>
+<p>同样 提示 <code>Static declaration of &#39;_pthread_has_direct_tsd&#39; follows non-static declaration</code> 我们也通过 <code>grep</code> 命令查重</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">grep -rne "_pthread_has_direct_tsd(void)" .</span><br><span class="line"><span class="meta">#</span><span class="bash"> 输出</span></span><br><span class="line">./pthread/tsd_private.h:273:_pthread_has_direct_tsd(void)</span><br><span class="line">./System/pthread_machdep.h:217:_pthread_has_direct_tsd(void)</span><br><span class="line"></span><br><span class="line"> grep -rne "_pthread_getspecific_direct(unsigned long slot)" .</span><br><span class="line"><span class="meta"> #</span><span class="bash"> 输出</span></span><br><span class="line"> ./pthread/tsd_private.h:284:_pthread_getspecific_direct(unsigned long slot)</span><br><span class="line">./System/pthread_machdep.h:244:_pthread_getspecific_direct(unsigned long slot)</span><br></pre></td></tr></table></figure>
     </div>
     
     
@@ -301,7 +351,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://samchiang.cn/2020/05/15/iOS%20%E5%BC%80%E5%8F%91%E4%B9%8B%20Runtime(%E4%B8%80)%20--%20Runtime%20%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" title="iOS 开发之 Runtime(一) -- Runtime 环境搭建">https://samchiang.cn/2020/05/15/iOS 开发之 Runtime(一) -- Runtime 环境搭建/</a>
+    <a href="https://samchiang.cn/2020/05/18/Rumtime-%E7%9A%84%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" title="Rumtime 的环境搭建">https://samchiang.cn/2020/05/18/Rumtime-的环境搭建/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -321,8 +371,8 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/05/08/Mach-O-class-dump/" rel="prev" title="iOS 逆向工具 class-dump">
-      <i class="fa fa-chevron-left"></i> iOS 逆向工具 class-dump
+    <a href="/2020/05/15/iOS%20%E5%BC%80%E5%8F%91%E4%B9%8B%20Runtime(%E4%B8%80)%20--%20Runtime%E5%88%9D%E8%AF%86/" rel="prev" title="iOS 开发之 Runtime(一) -- Runtime 初识">
+      <i class="fa fa-chevron-left"></i> iOS 开发之 Runtime(一) -- Runtime 初识
     </a></div>
       <div class="post-nav-item"></div>
     </div>
@@ -337,6 +387,7 @@
 
           </div>
           
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -383,7 +434,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是Runtime"><span class="nav-number">1.</span> <span class="nav-text">什么是Runtime?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#运行时释义"><span class="nav-number">1.1.</span> <span class="nav-text">运行时释义</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#准备工作"><span class="nav-number">1.</span> <span class="nav-text">准备工作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#开始配置"><span class="nav-number">2.</span> <span class="nav-text">开始配置</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -399,7 +450,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-count">7</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -410,7 +461,7 @@
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">标签</span>
       </div>
   </nav>
@@ -446,12 +497,12 @@
     <span class="post-meta-item-icon">
       <i class="fa fa-chart-area"></i>
     </span>
-    <span title="站点总字数">15k</span>
+    <span title="站点总字数">21k</span>
     <span class="post-meta-divider">|</span>
     <span class="post-meta-item-icon">
       <i class="fa fa-coffee"></i>
     </span>
-    <span title="站点阅读时长">14 分钟</span>
+    <span title="站点阅读时长">19 分钟</span>
 </div>
 
         
@@ -538,6 +589,25 @@
 
   
 
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '5229b624ea3086720dc4',
+      clientSecret: '0c5c59024b1a0e04406dc3a8cb405d6db3fbb805',
+      repo        : 'BlogComments',
+      owner       : 'ChiangSam',
+      admin       : ['ChiangSam'],
+      id          : 'd89dea004f07c3c6afa4a0131eda30d7',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
 
 </body>
 </html>
