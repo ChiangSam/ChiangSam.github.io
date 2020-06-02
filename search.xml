@@ -384,7 +384,7 @@
 </ul>
 <p>以上资料都可以通过 <a href="https://opensource.apple.com/" target="_blank" rel="noopener">Apple source</a> 获取。</p>
 <p>将文件解压到同一个目录中，这里用 <code>OpenSource</code> 来作为示例。</p>
-<p><img src="" alt="OpenSource目录结构"></p>
+<p><img src="https://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/opensource-filepath.png" alt="OpenSource目录结构"></p>
 <h4 id="开始配置"><a href="#开始配置" class="headerlink" title="开始配置"></a>开始配置</h4><p>直接编译 ojbc4-781.2 会出现如下报错</p>
 <blockquote>
 <p>unable to find sdk ‘macosx.internal’</p>
@@ -396,7 +396,7 @@
 <p>重新编译</p>
 <p><strong>文件查漏补缺</strong></p>
 <p>这个时候会提示 <code>&#39;sys/reason.h&#39; file not found</code> 错误, 如下图：</p>
-<p><img src="" alt="reason-no-found"></p>
+<p><img src="https://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/sys-reason-error.png" alt="reason-no-found"></p>
 <p>在项目目录下创建一个 <code>include</code> 文件夹，用于存放需要导入工程的文件，并且把它添加到项目 <code>Header search Paths</code> 中。操作步骤 <code>objc-&gt;TARGETS-&gt;ojbc-&gt; Build Settings</code> 搜索 <code>header search paths</code> 添加 <code>$(SRCROOT)/include</code></p>
 <p>接下来，我们用命令 <code>cd</code> 到 <code>OpenSource</code> 文件夹中 (PS: <code>OpenSource</code> 文件夹存放了准备工作中下载的文件). 通过 <code>find . -name &#39;reason.h&#39;</code> 命令去查找 <code>sys/reason.h</code> 文件. 确认文件个数和名字是否正确，通过以下命令去移动工程所需的文件到 <code>include</code> 文件夹中</p>
 <figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">cd [OpenSource文件夹的路径]</span><br><span class="line">finde . -name <span class="string">'reason.h'</span> <span class="params">| xargs -I '&#123;&#125;' mv &#123;&#125; [<span class="keyword">include</span>的文件夹路径]</span></span><br></pre></td></tr></table></figure>
@@ -415,6 +415,8 @@
 <li><code>&lt;CrashReporterClient.h&gt;</code> 这个文件在 <code>Libc-825.40.1</code> 中可以周到，在最新的 <code>Libc</code> 中会找不到,导入后依旧异常，查看下面的 <strong>CrashReporterClient 异常处理</strong></li>
 <li><code>&lt;objc-shared-cache.h&gt;</code></li>
 <li><code>&lt;_simple.h&gt;</code> 这个文件夹在 <code>Libc-825.40.1</code> 和 <code>libplatform-220</code> 文件夹中都存在，这里选择 <code>libplatform-220</code> 这个文件夹中的 <code>_simple.h</code> 文件</li>
+<li><code>&lt;restartable.h&gt;</code></li>
+<li><code>&lt;Block_private.h&gt;</code> </li>
 </ul>
 <p><strong>CrashReporterClient 异常处理</strong></p>
 <blockquote>
@@ -426,7 +428,49 @@
 
 <p>这里我们选择注释掉 <code>pthread_machdep.h</code> 文件中的定义即可.</p>
 <p>同样 提示 <code>Static declaration of &#39;_pthread_has_direct_tsd&#39; follows non-static declaration</code> 我们也通过 <code>grep</code> 命令查重</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">grep -rne "_pthread_has_direct_tsd(void)" .</span><br><span class="line"><span class="meta">#</span><span class="bash"> 输出</span></span><br><span class="line">./pthread/tsd_private.h:273:_pthread_has_direct_tsd(void)</span><br><span class="line">./System/pthread_machdep.h:217:_pthread_has_direct_tsd(void)</span><br><span class="line"></span><br><span class="line"> grep -rne "_pthread_getspecific_direct(unsigned long slot)" .</span><br><span class="line"><span class="meta"> #</span><span class="bash"> 输出</span></span><br><span class="line"> ./pthread/tsd_private.h:284:_pthread_getspecific_direct(unsigned long slot)</span><br><span class="line">./System/pthread_machdep.h:244:_pthread_getspecific_direct(unsigned long slot)</span><br></pre></td></tr></table></figure>]]></content>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">grep -re "_pthread_has_direct_tsd(void)" .</span><br><span class="line"><span class="meta">#</span><span class="bash"> 输出</span></span><br><span class="line">./pthread/tsd_private.h:273:_pthread_has_direct_tsd(void)</span><br><span class="line">./System/pthread_machdep.h:217:_pthread_has_direct_tsd(void)</span><br><span class="line"></span><br><span class="line"> grep -re "_pthread_getspecific_direct(unsigned long slot)" .</span><br><span class="line"><span class="meta"> #</span><span class="bash"> 输出</span></span><br><span class="line"> ./pthread/tsd_private.h:284:_pthread_getspecific_direct(unsigned long slot)</span><br><span class="line">./System/pthread_machdep.h:244:_pthread_getspecific_direct(unsigned long slot)</span><br><span class="line"></span><br><span class="line">grep -re "_pthread_setspecific_direct(unsigned long slot, void \* val)" # 这里注意 特殊符 * 需要加 \ 修饰</span><br><span class="line"><span class="meta">#</span><span class="bash"> 输出</span></span><br><span class="line">./pthread/tsd_private.h:_pthread_setspecific_direct(unsigned long slot, void * val)</span><br><span class="line">./System/pthread_machdep.h://_pthread_setspecific_direct(unsigned long slot, void * val)</span><br></pre></td></tr></table></figure>
+
+<p>这里我们都选择注释掉 <code>pthread_machdep.h</code> 文件中的重复定义</p>
+<p>编译遇到 <code>Expected &#39;,&#39;</code> 错误的时候，注释掉本行，或者复制上一个值，代替本行代码. 错误如下图:<br><img src="https://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/runtime-error.jpg" alt="RuntimeError1"><br><img src="https://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/runtime-error2.png" alt="RuntimeError2"><br><font color=red>ps: 解决了半天，暂时还没有找到更好的办法，不影响编译</font></p>
+<p><strong>libobjc.order 路径问题</strong></p>
+<ul>
+<li>选择 <code>target -&gt; objc -&gt; Build Settings</code></li>
+<li>在工程目录的 <code>Order File</code> 选项中，添加搜索路径 <code>$(SRCROOT)/libobjc.order</code></li>
+</ul>
+<p><strong>lCrashReporterClient 编译不到</strong></p>
+<blockquote>
+<p>Library not found for -lCrashReporterClient</p>
+</blockquote>
+<ul>
+<li>选择 <code>target -&gt; objc -&gt; Build Settings</code></li>
+<li>在 <code>Other Linker Flags</code> 中删除 <code>-lCrashReporterClient</code> ( <code>Debug</code> 和 <code>Release</code> 都删了)</li>
+</ul>
+<p><strong>_objc_opt_class 无法编译</strong></p>
+<blockquote>
+<p>Undefined symbol: _objc_opt_class<br>选择一个 <code>macOSX 的早期版本</code></p>
+</blockquote>
+<p><strong>Xcode 脚本编译问题</strong></p>
+<blockquote>
+<p>/xcodebuild:1:1: SDK “macosx.internal” cannot be located.<br>/xcrun:1:1: sh -c ‘/Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -sdk macosx.internal -find clang++ 2&gt; /dev/null’ failed with exit code 16384: (null) (errno=No such file or directory)<br>/xcrun:1:1: unable to find utility “clang++”, not a developer tool or in PATH</p>
+</blockquote>
+<ul>
+<li>选择 <code>target -&gt; objc -&gt; Build Phases -&gt; Run Script(markgc)</code></li>
+<li>把脚本文本 <code>macosx.internal</code> 改成 <code>macosx</code></li>
+</ul>
+<p><strong>ObjectiveC.apinotes 异常</strong></p>
+<ul>
+<li>选择 <code>target -&gt; objc -&gt; Build Settings</code></li>
+<li><code>Text-Based InstallAPI Verification Model</code> 中添加搜索路径 <code>Errors Only</code></li>
+<li><code>Other Text-Based InstallAPI Flags</code> 清空所有内容</li>
+</ul>
+<h3 id="编译成功"><a href="#编译成功" class="headerlink" title="编译成功"></a>编译成功</h3><p>经过重重难关，终于迎来了我们的编译成功<br><code>Build Success</code></p>
+<h3 id="调试编译"><a href="#调试编译" class="headerlink" title="调试编译"></a>调试编译</h3><p>新建一个 <code>Target</code> , 然后添加依赖， 如下图：<br><img src="https://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/runtime-new-target.png" alt="Runtime new Target"><br><img src="https://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/runtime-add-depandence.png" alt="Runtime dependency"></p>
+<h3 id="Xcode-11-新特性"><a href="#Xcode-11-新特性" class="headerlink" title="Xcode 11 新特性"></a>Xcode 11 新特性</h3><p>新建好我们的 <code>Target</code>, 这里需要注意，要进行一下设置</p>
+<blockquote>
+<p>target -&gt; objc -&gt; Build Settings -&gt; Enable Hardened Runtime -&gt; NO`</p>
+</blockquote>
+<p><a href="https://developer.apple.com/documentation/security/hardened_runtime" target="_blank" rel="noopener">https://developer.apple.com/documentation/security/hardened_runtime</a></p>
+<h3 id="开心玩转吧"><a href="#开心玩转吧" class="headerlink" title="开心玩转吧"></a>开心玩转吧</h3>]]></content>
       <categories>
         <category>iOS底层原理</category>
       </categories>
