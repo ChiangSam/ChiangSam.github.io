@@ -179,6 +179,36 @@
       </categories>
   </entry>
   <entry>
+    <title>iOS 逆向工具 class-dump</title>
+    <url>/2020/05/08/Mach-O-class-dump/</url>
+    <content><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>class-dump 是一个工具，它利用了 Objective-C 语言的运行时特性，将存储在 Mach-O 文件中的头文件信息提取出来，并生成对应的 .h 文件。</p>
+<a id="more"></a>
+
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>可以在其<a href="http://stevenygard.com/projects/class-dump/" target="_blank" rel="noopener">class-dump 官网</a>下载，将里面的 class-dump 直接放在/usr/local/bin 目录，并给个可执行权限即可 如果/usr/local/bin 没有添加到 PATH,请自行添加</p>
+<h2 id="如何使用-class-dump"><a href="#如何使用-class-dump" class="headerlink" title="如何使用 class-dump"></a>如何使用 class-dump</h2><p><code>class-dump -H Mach-O 文件路径 -o 头文件存放目录</code></p>
+<h2 id="Mach-O-文件"><a href="#Mach-O-文件" class="headerlink" title="Mach-O 文件"></a>Mach-O 文件</h2><p><code>Mach-O</code> 其实是 <code>Mach Object</code> 文件格式的缩写，是 <code>mac</code> 以及 <code>iOS</code> 上可执行文件的格式， 类似于 <code>windows</code> 上的 <code>PE</code> 格式 ( <code>Portable Executable</code> ) , <code>linux</code> 上的 <code>elf</code> 格式 ( <code>Executable and Linking Format</code> ) .<br>它是一种用于可执行文件、目标代码、动态库的文件格式。作为 <code>a.out</code> 格式的替代，<code>Mach-O</code> 提供了更强的扩展性。<br>但是除了可执行文件外 , 其实还有一些文件也是使用的 <code>Mach-O</code> 的文件格式 .<br>属于 <code>Mach-O</code> 格式的常见文件</p>
+<blockquote>
+<ul>
+<li>目标文件 .o</li>
+<li>库文件<ul>
+<li>.a</li>
+<li>.dylib</li>
+<li>Framework</li>
+</ul>
+</li>
+<li>可执行文件<br>dyld ( 动态链接器 )<br>.dsym ( 符号表 )</li>
+</ul>
+</blockquote>
+<p>也就是说 <code>Mach-O</code> 并非一定是可执行文件 , 它是一种文件格式 , 分为 <code>Mach-O Object</code> 目标文件 、<code>Mach-O ececutable</code>可执行文件、 <code>Mach-O dynamically</code> 动态库文件、 <code>Mach-O dynamic linker</code> 动态链接器文件、 <code>Mach-O dSYM companion</code> 符号表文件 , 等等 .</p>
+]]></content>
+      <categories>
+        <category>hook</category>
+      </categories>
+      <tags>
+        <tag>class-dump、hook</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>CocoaPads 私有库</title>
     <url>/2018/06/28/CocoaPads-%E7%A7%81%E6%9C%89%E5%BA%93/</url>
     <content><![CDATA[<h3 id="私有库创建步骤"><a href="#私有库创建步骤" class="headerlink" title="私有库创建步骤"></a>私有库创建步骤</h3><h5 id="1-建立自己的-Git-仓库，作为自己的索引库，将索引库添加到-pod-repo-中"><a href="#1-建立自己的-Git-仓库，作为自己的索引库，将索引库添加到-pod-repo-中" class="headerlink" title="1. 建立自己的 Git 仓库，作为自己的索引库，将索引库添加到 pod repo 中"></a>1. 建立自己的 Git 仓库，作为自己的索引库，将索引库添加到 pod repo 中</h5><p>这里以自己的服务器部署 Gitlab 作为私有库管理。Gitlab 部署<br><a href="https://ken.io/note/centos7-gitlab-install-tutorial" target="_blank" rel="noopener">Gitlab CentOS 部署</a><br><a href="https://packages.gitlab.com/gitlab/gitlab-ce/packages/el/7/gitlab-ce-12.0.1-ce.0.el7.x86_64.rpm" target="_blank" rel="noopener">GitLab 安装包官网地址</a><br>Gitlab 部署完毕后，创建类似 Github 的索引仓库，这里命名 gitlab-specs</p>
@@ -241,129 +271,81 @@
       </tags>
   </entry>
   <entry>
-    <title>iOS 逆向工具 class-dump</title>
-    <url>/2020/05/08/Mach-O-class-dump/</url>
-    <content><![CDATA[<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>class-dump 是一个工具，它利用了 Objective-C 语言的运行时特性，将存储在 Mach-O 文件中的头文件信息提取出来，并生成对应的 .h 文件。</p>
+    <title>类原理探索(1)</title>
+    <url>/2021/04/07/%E7%B1%BB%E5%8E%9F%E7%90%86%E6%8E%A2%E7%B4%A2-1/</url>
+    <content><![CDATA[<h3 id="透过现象看本质"><a href="#透过现象看本质" class="headerlink" title="透过现象看本质"></a>透过现象看本质</h3><p>作为一个流弊的程序猿，想要掌握一门语言，并且精通它，就必须扒开他的外衣，一层层往里看，研究他的内在(底层)原理。对于一个穿着鲜艳外衣的‘美女’，门外汉完全不知道怎么下手有咩有?<br>那我们到底应该怎么办呢？</p>
+<div align=center><img src="https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=2291201351,393926033&fm=26&gp=0.jpg"></div>
+
+<p>好吧，我们只能从最熟悉的地方输入，比如说通过你的对象。如果你还没有对象，赶紧去开辟一个，或者申请一个吧。哈哈哈~~</p>
 <a id="more"></a>
 
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>可以在其<a href="http://stevenygard.com/projects/class-dump/" target="_blank" rel="noopener">class-dump 官网</a>下载，将里面的 class-dump 直接放在/usr/local/bin 目录，并给个可执行权限即可 如果/usr/local/bin 没有添加到 PATH,请自行添加</p>
-<h2 id="如何使用-class-dump"><a href="#如何使用-class-dump" class="headerlink" title="如何使用 class-dump"></a>如何使用 class-dump</h2><p><code>class-dump -H Mach-O 文件路径 -o 头文件存放目录</code></p>
-<h2 id="Mach-O-文件"><a href="#Mach-O-文件" class="headerlink" title="Mach-O 文件"></a>Mach-O 文件</h2><p><code>Mach-O</code> 其实是 <code>Mach Object</code> 文件格式的缩写，是 <code>mac</code> 以及 <code>iOS</code> 上可执行文件的格式， 类似于 <code>windows</code> 上的 <code>PE</code> 格式 ( <code>Portable Executable</code> ) , <code>linux</code> 上的 <code>elf</code> 格式 ( <code>Executable and Linking Format</code> ) .<br>它是一种用于可执行文件、目标代码、动态库的文件格式。作为 <code>a.out</code> 格式的替代，<code>Mach-O</code> 提供了更强的扩展性。<br>但是除了可执行文件外 , 其实还有一些文件也是使用的 <code>Mach-O</code> 的文件格式 .<br>属于 <code>Mach-O</code> 格式的常见文件</p>
+<p>首先我们来看下下面的代码。</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><span class="line">SCPerson *p1 = [SCPerson alloc];</span><br><span class="line">SCPerson *p2 = [p1 init];</span><br><span class="line">SCPerson *p3 = [p1 init];</span><br><span class="line"><span class="built_in">SCNSLog</span>(<span class="string">@"%@ - %p - %p"</span>, p1, p1, &amp;p1);</span><br><span class="line"><span class="built_in">SCNSLog</span>(<span class="string">@"%@ - %p - %p"</span>, p2, p2, &amp;p2);</span><br><span class="line"><span class="built_in">SCNSLog</span>(<span class="string">@"%@ - %p - %p"</span>, p3, p3, &amp;p3);</span><br></pre></td></tr></table></figure>
+<p>看完上面的代码，我们来思考一下，你实际上到底拥有几个对象。<br>我们赶紧把他们的结果打印一下😏；</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">&lt;<span class="symbol">SCPerson:</span> <span class="number">0x600001c040e0</span>&gt; - <span class="number">0x600001c040e0</span> - <span class="number">0x7ffee9bee028</span></span><br><span class="line">&lt;<span class="symbol">SCPerson:</span> <span class="number">0x600001c040e0</span>&gt; - <span class="number">0x600001c040e0</span> - <span class="number">0x7ffee9bee020</span></span><br><span class="line">&lt;<span class="symbol">SCPerson:</span> <span class="number">0x600001c040e0</span>&gt; - <span class="number">0x600001c040e0</span> - <span class="number">0x7ffee9bee018</span></span><br></pre></td></tr></table></figure>
+<p><strong>呦吼~~，<code>p1,p2,p3</code>指针地址虽然不同，但是却指向了同一片内存空间。</strong></p>
+<p>这里就出现了非常经典的图</p>
+<p><img src="http://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/2021/04/07/16175490147888.jpg?x-oss-process=image/auto-orient,1/quality,q_90" alt="-w582"></p>
 <blockquote>
 <ul>
-<li>目标文件 .o</li>
-<li>库文件<ul>
-<li>.a</li>
-<li>.dylib</li>
-<li>Framework</li>
-</ul>
-</li>
-<li>可执行文件<br>dyld ( 动态链接器 )<br>.dsym ( 符号表 )</li>
+<li>创建SCPerson时，申请开辟了内存空间</li>
+<li>p1, p2, p3 指向了同一片内存空间</li>
 </ul>
 </blockquote>
-<p>也就是说 <code>Mach-O</code> 并非一定是可执行文件 , 它是一种文件格式 , 分为 <code>Mach-O Object</code> 目标文件 、<code>Mach-O ececutable</code>可执行文件、 <code>Mach-O dynamically</code> 动态库文件、 <code>Mach-O dynamic linker</code> 动态链接器文件、 <code>Mach-O dSYM companion</code> 符号表文件 , 等等 .</p>
-]]></content>
-      <categories>
-        <category>hook</category>
-      </categories>
-      <tags>
-        <tag>class-dump、hook</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>homebrew安装及相关问题解决</title>
-    <url>/2019/07/15/homebrew-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/</url>
-    <content><![CDATA[<h3 id="什么是Homebrew"><a href="#什么是Homebrew" class="headerlink" title="什么是Homebrew"></a>什么是Homebrew</h3><p>Homebrew 是 Mac OS 的一种包管理工具，相当于 Redhat Linux(Centos/RHEL/Fedora) 的 <code>yum</code> 或者 Debian Linux(Debian/Ubuntu) 的 <code>apt-get</code>。 <a href="https://brew.sh/" target="_blank" rel="noopener">Homebrew 的官网</a></p>
-<h3 id="Homebrew-安装"><a href="#Homebrew-安装" class="headerlink" title="Homebrew 安装"></a>Homebrew 安装</h3><p>使用官方提供的方法安装 Homebrew</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">/bin/bash -c <span class="string">"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"</span></span><br></pre></td></tr></table></figure>
-
-<a id="more"></a>
-
-<h3 id="使用-brew-install-出现长时间卡顿怎么办？"><a href="#使用-brew-install-出现长时间卡顿怎么办？" class="headerlink" title="使用 brew install 出现长时间卡顿怎么办？"></a>使用 brew install 出现长时间卡顿怎么办？</h3><p>在国内的网络环境下使用 Homebrew 安装软件的过程中可能会出现长时间的卡在 Updating Homebrew 这个步骤上。<br>例如： 执行 brew install composer</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">➜  ~ brew install composer</span><br><span class="line">Updating Homebrew... <span class="comment"># 如果碰到长时间卡在这里，参考以下 2 种处理方法</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>方法一: 按住 control + c  取消本次更新操作</strong></p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">➜  ~ brew install composer</span><br><span class="line">Updating Homebrew...</span><br><span class="line">^C</span><br></pre></td></tr></table></figure>
-
-<p>按住 control + c 之后命令会显示 ^C, 就表示已经取消 <code>Updating Homebrew</code> 操作，跳过这个步骤去执行我们真正需要的安装操作</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">➜  ~ brew install composer</span><br><span class="line">Updating Homebrew...</span><br><span class="line">^C==&gt; Satisfying dependencies</span><br><span class="line">==&gt; Downloading <span class="symbol">https:</span>/<span class="regexp">/getcomposer.org/download</span><span class="regexp">/1.7.2/composer</span>.phar</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-
-<p><font color=red>PS: 这个办法是临时性的解决方案</font></p>
-<p><strong>方法二： 使用 Alibaba 的 Homebrew 镜像进行加速</strong></p>
-<p>平时我们执行 <code>brew</code> 命令安装软件的时候，跟一下3个仓库有关：</p>
+<p>原来<code>init</code>只是一个构造函数，<code>alloc</code> 才是实干家，创建关联对象，开辟内存空间。<br><code>alloc</code> 做了这么多事情，它到底是怎么做到的呢？那我们就来扒开他的外衣，仔细进去看看吧。</p>
+<p>===</p>
+<h3 id="揭露-alloc-的纱衣"><a href="#揭露-alloc-的纱衣" class="headerlink" title="揭露 alloc 的纱衣"></a>揭露 <code>alloc</code> 的纱衣</h3><p>我们想要知道 <code>alloc</code> 做了啥，第一步想到的肯定是 <code>Jump to definition</code>, 通过她裸露的手臂，摸上去看一看。</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><span class="line">+ (<span class="keyword">instancetype</span>)alloc OBJC_SWIFT_UNAVAILABLE(<span class="string">"use object initializers instead"</span>);</span><br></pre></td></tr></table></figure>
+<p>不给看。没关系我还有其他法宝，看我给你下个符号断点</p>
 <ul>
-<li>brew.git</li>
-<li>homoebrew-core.git</li>
-<li>homebrew-bottles.git</li>
+<li>我们下个<code>alloc</code>的符号断点</li>
 </ul>
-<p>通过更改这 3 个仓库的地址为 Alibaba 提供的地址</p>
-<h4 id="替换-还原-brew-git-仓库地址"><a href="#替换-还原-brew-git-仓库地址" class="headerlink" title="替换/还原 brew.git 仓库地址"></a>替换/还原 brew.git 仓库地址</h4><figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 替换成阿里巴巴的 brew.git 仓库地址:</span></span><br><span class="line">cd <span class="string">"$(brew --repo)"</span></span><br><span class="line">git remote set-url origin <span class="symbol">https:</span>/<span class="regexp">/mirrors.aliyun.com/homebrew</span><span class="regexp">/brew.git</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">#=======================================================</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp"># 还原为官方提供的 brew.git 仓库地址</span></span><br><span class="line"><span class="regexp">cd "$(brew --repo)"</span></span><br><span class="line"><span class="regexp">git remote set-url origin https:/</span><span class="regexp">/github.com/</span>Homebrew/brew.git</span><br></pre></td></tr></table></figure>
-
-<h4 id="替换-还原-homebrew-core-git-仓库地址"><a href="#替换-还原-homebrew-core-git-仓库地址" class="headerlink" title="替换 / 还原 homebrew-core.git 仓库地址"></a>替换 / 还原 homebrew-core.git 仓库地址</h4><figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 替换成阿里巴巴的 homebrew-core.git 仓库地址:</span></span><br><span class="line">cd <span class="string">"$(brew --repo)/Library/Taps/homebrew/homebrew-core"</span></span><br><span class="line">git remote set-url origin <span class="symbol">https:</span>/<span class="regexp">/mirrors.aliyun.com/homebrew</span><span class="regexp">/homebrew-core.git</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">#=======================================================</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp"># 还原为官方提供的 homebrew-core.git 仓库地址</span></span><br><span class="line"><span class="regexp">cd "$(brew --repo)/</span>Library/Taps/homebrew/homebrew-core<span class="string">"</span></span><br><span class="line"><span class="string">git remote set-url origin https://github.com/Homebrew/homebrew-core.git</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="替换-还原-homebrew-bottles-访问地址"><a href="#替换-还原-homebrew-bottles-访问地址" class="headerlink" title="替换 / 还原 homebrew-bottles 访问地址"></a>替换 / 还原 homebrew-bottles 访问地址</h3><p>这个跟你的 macOS 系统使用的 shell 版本有关系<br>所以，先来查看当前使用 shell 版本</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">echo $SHELL</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果你的输出结果是 /bin/zsh，参考下方的 zsh 终端操作方式</span></span><br><span class="line"><span class="comment"># 如果你的输出结果是 /bin/bash，参考下方的 bash 终端操作方式</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>zsh 终端操作方式</strong></p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 替换成阿里巴巴的 homebrew-bottles 访问地址:</span></span><br><span class="line">echo <span class="string">'export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.aliyun.com/homebrew/homebrew-bottles'</span> &gt;&gt; ~<span class="regexp">/.zshrc</span></span><br><span class="line"><span class="regexp">source ~/</span>.zshrc</span><br><span class="line"></span><br><span class="line"><span class="comment">#=======================================================</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 还原为官方提供的 homebrew-bottles 访问地址</span></span><br><span class="line">vi ~<span class="regexp">/.zshrc</span></span><br><span class="line"><span class="regexp"># 然后，删除 HOMEBREW_BOTTLE_DOMAIN 这一行配置</span></span><br><span class="line"><span class="regexp">source ~/</span>.zshrc</span><br></pre></td></tr></table></figure>
-
-<p><strong>bash 终端操作方式</strong></p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 替换 homebrew-bottles 访问 URL:</span></span><br><span class="line">echo <span class="string">'export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.aliyun.com/homebrew/homebrew-bottles'</span> &gt;&gt; ~<span class="regexp">/.bash_profile</span></span><br><span class="line"><span class="regexp">source ~/</span>.bash_profile</span><br><span class="line"></span><br><span class="line"><span class="comment">#=======================================================</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 还原为官方提供的 homebrew-bottles 访问地址</span></span><br><span class="line">vi ~<span class="regexp">/.bash_profile</span></span><br><span class="line"><span class="regexp"># 然后，删除 HOMEBREW_BOTTLE_DOMAIN 这一行配置</span></span><br><span class="line"><span class="regexp">source ~/</span>.bash_profile</span><br></pre></td></tr></table></figure>
-]]></content>
-      <categories>
-        <category>工具</category>
-      </categories>
-      <tags>
-        <tag>homebrew</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>iOS 开发之 Runtime(一) -- Runtime 初识</title>
-    <url>/2020/05/15/iOS%20%E5%BC%80%E5%8F%91%E4%B9%8B%20Runtime(%E4%B8%80)%20--%20Runtime%E5%88%9D%E8%AF%86/</url>
-    <content><![CDATA[<h2 id="什么是Runtime"><a href="#什么是Runtime" class="headerlink" title="什么是Runtime?"></a>什么是Runtime?</h2><p>Runtime 是由 C、 C++、 汇编共共同组成的 为 iOS 提供运行时功能的一套 API, 其中最主要的就是消息机制。<br>可以查看苹果的官网 <a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008048" target="_blank" rel="noopener">Objective-C Runtime Programming Guide</a></p>
-<a id="more"></a>
-<h3 id="运行时释义"><a href="#运行时释义" class="headerlink" title="运行时释义"></a>运行时释义</h3><ul>
-<li>运行时，是在代码运行的时候，将对象等装载到内存中，通过方法名动态查找实现的函数。</li>
-<li>对比 C，C 语言在函数编译阶段会决定调用哪个函数，Rumtime 是在运行时根据函数的名称查找需要调用的哪个函数。</li>
-</ul>
-<h3 id="编译时释义"><a href="#编译时释义" class="headerlink" title="编译时释义"></a>编译时释义</h3><p>编译时就是在编译器，将高级语言编译成可以被计算机识别的机器语言。</p>
-<h3 id="Runtime-的底层库关系"><a href="#Runtime-的底层库关系" class="headerlink" title="Runtime 的底层库关系"></a>Runtime 的底层库关系</h3><p><img src="https://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/Runtime%E5%BA%95%E5%B1%82%E5%BA%93%E5%85%B3%E7%B3%BB.png" alt="Runtime 底层库的关系"></p>
-<h3 id="Runtime-解析"><a href="#Runtime-解析" class="headerlink" title="Runtime 解析"></a>Runtime 解析</h3><p>简单举例</p>
-<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></span><br><span class="line"><span class="meta">#import <span class="meta-string">"SCPerson.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> sayHello() &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%s"</span>, __func__);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[]) &#123;</span><br><span class="line">    <span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">        <span class="comment">// insert code here...</span></span><br><span class="line">        SCPerson *person = [[SCPerson alloc] init];</span><br><span class="line">        [person sayHello];</span><br><span class="line">        sayHello();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
+<p><img src="http://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/2021/04/07/16177245115581.jpg?x-oss-process=image/auto-orient,1/quality,q_90" alt=""></p>
 <blockquote>
-<p>在 SCPerson.m 中 没有实现 <code>sayHello</code>, 在编译时，这个并不会报错，但是在运行时，会因为找不到 <code>sayHello</code> 发放报错.</p>
+<p>我们可以看到是调用了 <code>libobjc.A.dylib</code> 库的 <code>[NSObject alooc]</code>方法，并且 <code>jmp</code> 跳转到 <code>_objc_rootAlloc</code> 方法</p>
 </blockquote>
-<p>利用 <code>clang</code> 来编译 <code>main.m</code> 文件，来查看底层代码</p>
-<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 这个是简单的编译</span></span><br><span class="line">clang -rewrite-objc main.m -o main.cpp </span><br><span class="line"></span><br><span class="line"><span class="comment"># 这种编译方式可以,减少警告</span></span><br><span class="line">xcrun -sdk iphoneos clang -arch arm64 -rewrite main.m -o main.c++</span><br></pre></td></tr></table></figure>
-<p>我们可以看下编译过后 C 代码如下：</p>
-<p><img src="https://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/MainClang-Rumtime.jpg" alt="Main-Clang-Rumtime"></p>
-<p>其中</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</span><br><span class="line">    <span class="comment">/* @autoreleasepool */</span> &#123; __AtAutoreleasePool __autoreleasepool; </span><br><span class="line">        SCPerson *person = ((SCPerson *(*)(id, SEL))(<span class="keyword">void</span> *)objc_msgSend)((id)((SCPerson *(*)(id, SEL))(<span class="keyword">void</span> *)objc_msgSend)((id)objc_getClass(<span class="string">"SCPerson"</span>), sel_registerName(<span class="string">"alloc"</span>)), sel_registerName(<span class="string">"init"</span>));</span><br><span class="line">        ((<span class="keyword">void</span> (*)(id, SEL))(<span class="keyword">void</span> *)objc_msgSend)((id)person, sel_registerName(<span class="string">"sayHello"</span>));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>可以看出 Objective-C 调用方法的本质是通过 <code>objc_messageSend</code> 通过方法名 <code>sel_registerName</code>, 调用对象的实例方法。所以我们可以看出<code>OC 方法的本质</code>其实就是发送消息</p>
-<blockquote>
-<p><code>(id)objc_getClass(&quot;SCPerson&quot;)</code> 这个就是消息接受者<br><code>sel_registerName(&quot;alloc&quot;)</code> 这个就是方法编号</p>
-</blockquote>
-<p>通过</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">objc_object</span> <span class="title">SCPerson</span>;</span></span><br></pre></td></tr></table></figure>
-<p>可以看出 <code>OC 对象</code>的本质，其实是一个结构体.</p>
-<p><strong>带着问题看本质</strong></p>
 <ul>
-<li>如何通过方法编号，查询到方法</li>
+<li>我们再下 <code>_objc_rootAlloc</code> 符号断点</li>
 </ul>
-<p>为了更方便我们查看方法的本质，我们最好先搭建一套 <a href="/2020/05/18/Rumtime-%E7%9A%84%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" title="Rumtime 的环境搭建">Rumtime 的环境搭建</a> 的环境</p>
+<p><img src="http://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/2021/04/07/16177246363207.jpg?x-oss-process=image/auto-orient,1/quality,q_90" alt=""></p>
+<blockquote>
+<p>我们可以看到会调用<code>_objc_rootAllocZone</code>方法</p>
+</blockquote>
+<ul>
+<li>啥样不说我们继续下 <code>_objc_rootAllocZone</code> 符号断点</li>
+</ul>
+<p><img src="http://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/2021/04/07/16177247709131.jpg?x-oss-process=image/auto-orient,1/quality,q_90" alt=""></p>
+<p><font color=red> 通过一个个符号断点，我们能够大致知道 <code>alloc</code> 的基本流程 </font></p>
+<p>同样的除了这个办法我们还有其他方法，查看<code>alloc</code> 的基本流程</p>
+<blockquote>
+<ul>
+<li>通过 <code>ctrl step into</code> 然后再下<code>objc_alloc</code>符号断点</li>
+<li><code>Debug - Debug workflow - always show disassembly</code> 查看汇编流程</li>
+</ul>
+</blockquote>
+<p>但是无论如何，还是和汇编过不去，这样的操作，看的我这个流弊的程序猿头昏眼花。如果有个 能够跟流程的源码，那该有多少。这样美丽的<code>对象</code>还不是随便让我扒了看？</p>
+<p>谢天谢地，我这里竟然还有姑娘的房门钥匙:<a href="https://samchiang.cn/2020/05/18/Objc4%E6%BA%90%E7%A0%81%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">Objc4源码环境搭建</a>, 嗨起来<del>~</del></p>
+<p>===</p>
+<h3 id="源码下的真容"><a href="#源码下的真容" class="headerlink" title="源码下的真容"></a>源码下的真容</h3><p>拿到源码后，第一件事情肯定是 <code>Jump to definition</code>, 终于我们可以看到美女袈裟下的面容了；<br><img src="http://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/2021/04/07/16177258664876.jpg?x-oss-process=image/auto-orient,1/quality,q_90" alt=""><br><img src="http://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/2021/04/07/16177258896969.jpg?x-oss-process=image/auto-orient,1/quality,q_90" alt=""><br><img src="http://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/2021/04/07/16177259223074.jpg?x-oss-process=image/auto-orient,1/quality,q_90" alt=""><br><img src="http://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/2021/04/07/16177259556270.jpg?x-oss-process=image/auto-orient,1/quality,q_90" alt=""><br><img src="http://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/2021/04/07/16177259976391.jpg?x-oss-process=image/auto-orient,1/quality,q_90" alt=""></p>
+<p>(这尼玛满文章的截图。。哈哈哈，好犹豫要不要Copy源码，算了先继续)</p>
+<p>这里我们可以看到很多 <code>fastpath</code> 和 <code>slowpath</code> 他们又是什么呢？</p>
+<figure class="highlight objc"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> fastpath(x) (__builtin_expect(bool(x), 1))</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> slowpath(x) (__builtin_expect(bool(x), 0))</span></span><br></pre></td></tr></table></figure>
+<p>苹果大婶们把大概率调用的方法定义了<code>fastpath</code>，通过这种方式，编译器在编译过程中，会将可能性更大的代码紧跟着前面的代码，从而减少指令跳转带来的性能上的下降。这样 <code>gcc</code> 编译的指令会预先读取 <code>fastpath</code> 下的指令，系统运行时就会减少很多重新取值.</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>通过源码我们可以看到 <code>alloc</code> 真正的流程是：</p>
+<p><img src="http://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/2021/04/07/16177271678254.jpg?x-oss-process=image/auto-orient,1/quality,q_90" alt=""></p>
+<p>非常清晰有木有？后续我们将展开讲 <code>cls-&gt;instanceSize</code>、<code>calloc</code>、 <code>initInstanceIsa</code> 到底都做了什么？</p>
+<h2 id="感谢"><a href="#感谢" class="headerlink" title="感谢"></a>感谢</h2><p>通片文章由逻辑教育 Cooci老师大师班下的指导。不过现在是我的了~~</p>
 ]]></content>
       <categories>
         <category>iOS底层原理</category>
       </categories>
       <tags>
-        <tag>runtime</tag>
+        <tag>objc4</tag>
       </tags>
   </entry>
   <entry>
-    <title>Rumtime 的环境搭建</title>
-    <url>/2020/05/18/Rumtime-%E7%9A%84%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
+    <title>Objc4源码环境搭建</title>
+    <url>/2020/05/18/objc4%E6%BA%90%E7%A0%81%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
     <content><![CDATA[<p>苹果在 <a href="https://opensource.apple.com/" target="_blank" rel="noopener">OpenSource</a> 官网 上开放了一部分源码，我们可以同过这个官网，下载我们所需要的东西，比如 objc 的源码，通过源码能够方便我们了解iOS的底层原理。想要快速的了解我们的 <code>runtime</code>，搭建一个可以编译调试的 <code>runtime</code> ，能够向我们的效率倍增。下面对针对最新的 <code>objc4-781.2</code> 进行编译</p>
 <a id="more"></a>
 
@@ -471,6 +453,50 @@
 </blockquote>
 <p><a href="https://developer.apple.com/documentation/security/hardened_runtime" target="_blank" rel="noopener">https://developer.apple.com/documentation/security/hardened_runtime</a></p>
 <h3 id="开心玩转吧"><a href="#开心玩转吧" class="headerlink" title="开心玩转吧"></a>开心玩转吧</h3>]]></content>
+      <categories>
+        <category>iOS底层原理</category>
+      </categories>
+      <tags>
+        <tag>objc4</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>iOS 开发之 Runtime(一) -- Runtime 初识</title>
+    <url>/2020/05/15/iOS%20%E5%BC%80%E5%8F%91%E4%B9%8B%20Runtime(%E4%B8%80)%20--%20Runtime%E5%88%9D%E8%AF%86/</url>
+    <content><![CDATA[<h2 id="什么是Runtime"><a href="#什么是Runtime" class="headerlink" title="什么是Runtime?"></a>什么是Runtime?</h2><p>Runtime 是由 C、 C++、 汇编共共同组成的 为 iOS 提供运行时功能的一套 API, 其中最主要的就是消息机制。<br>可以查看苹果的官网 <a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008048" target="_blank" rel="noopener">Objective-C Runtime Programming Guide</a></p>
+<a id="more"></a>
+<h3 id="运行时释义"><a href="#运行时释义" class="headerlink" title="运行时释义"></a>运行时释义</h3><ul>
+<li>运行时，是在代码运行的时候，将对象等装载到内存中，通过方法名动态查找实现的函数。</li>
+<li>对比 C，C 语言在函数编译阶段会决定调用哪个函数，Rumtime 是在运行时根据函数的名称查找需要调用的哪个函数。</li>
+</ul>
+<h3 id="编译时释义"><a href="#编译时释义" class="headerlink" title="编译时释义"></a>编译时释义</h3><p>编译时就是在编译器，将高级语言编译成可以被计算机识别的机器语言。</p>
+<h3 id="Runtime-的底层库关系"><a href="#Runtime-的底层库关系" class="headerlink" title="Runtime 的底层库关系"></a>Runtime 的底层库关系</h3><p><img src="https://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/Runtime%E5%BA%95%E5%B1%82%E5%BA%93%E5%85%B3%E7%B3%BB.png" alt="Runtime 底层库的关系"></p>
+<h3 id="Runtime-解析"><a href="#Runtime-解析" class="headerlink" title="Runtime 解析"></a>Runtime 解析</h3><p>简单举例</p>
+<figure class="highlight objectivec"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></span><br><span class="line"><span class="meta">#import <span class="meta-string">"SCPerson.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> sayHello() &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%s"</span>, __func__);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[]) &#123;</span><br><span class="line">    <span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">        <span class="comment">// insert code here...</span></span><br><span class="line">        SCPerson *person = [[SCPerson alloc] init];</span><br><span class="line">        [person sayHello];</span><br><span class="line">        sayHello();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>在 SCPerson.m 中 没有实现 <code>sayHello</code>, 在编译时，这个并不会报错，但是在运行时，会因为找不到 <code>sayHello</code> 发放报错.</p>
+</blockquote>
+<p>利用 <code>clang</code> 来编译 <code>main.m</code> 文件，来查看底层代码</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 这个是简单的编译</span></span><br><span class="line">clang -rewrite-objc main.m -o main.cpp </span><br><span class="line"></span><br><span class="line"><span class="comment"># 这种编译方式可以,减少警告</span></span><br><span class="line">xcrun -sdk iphoneos clang -arch arm64 -rewrite main.m -o main.c++</span><br></pre></td></tr></table></figure>
+<p>我们可以看下编译过后 C 代码如下：</p>
+<p><img src="https://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/MainClang-Rumtime.jpg" alt="Main-Clang-Rumtime"></p>
+<p>其中</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</span><br><span class="line">    <span class="comment">/* @autoreleasepool */</span> &#123; __AtAutoreleasePool __autoreleasepool; </span><br><span class="line">        SCPerson *person = ((SCPerson *(*)(id, SEL))(<span class="keyword">void</span> *)objc_msgSend)((id)((SCPerson *(*)(id, SEL))(<span class="keyword">void</span> *)objc_msgSend)((id)objc_getClass(<span class="string">"SCPerson"</span>), sel_registerName(<span class="string">"alloc"</span>)), sel_registerName(<span class="string">"init"</span>));</span><br><span class="line">        ((<span class="keyword">void</span> (*)(id, SEL))(<span class="keyword">void</span> *)objc_msgSend)((id)person, sel_registerName(<span class="string">"sayHello"</span>));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以看出 Objective-C 调用方法的本质是通过 <code>objc_messageSend</code> 通过方法名 <code>sel_registerName</code>, 调用对象的实例方法。所以我们可以看出<code>OC 方法的本质</code>其实就是发送消息</p>
+<blockquote>
+<p><code>(id)objc_getClass(&quot;SCPerson&quot;)</code> 这个就是消息接受者<br><code>sel_registerName(&quot;alloc&quot;)</code> 这个就是方法编号</p>
+</blockquote>
+<p>通过</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">objc_object</span> <span class="title">SCPerson</span>;</span></span><br></pre></td></tr></table></figure>
+<p>可以看出 <code>OC 对象</code>的本质，其实是一个结构体.</p>
+<p><strong>带着问题看本质</strong></p>
+<ul>
+<li>如何通过方法编号，查询到方法</li>
+</ul>
+<p>为了更方便我们查看方法的本质，我们最好先搭建一套  的环境</p>
+]]></content>
       <categories>
         <category>iOS底层原理</category>
       </categories>
@@ -583,6 +609,53 @@
       </categories>
       <tags>
         <tag>iterm2 oh-my-zsh</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>homebrew安装及相关问题解决</title>
+    <url>/2019/07/15/homebrew-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/</url>
+    <content><![CDATA[<h3 id="什么是Homebrew"><a href="#什么是Homebrew" class="headerlink" title="什么是Homebrew"></a>什么是Homebrew</h3><p>Homebrew 是 Mac OS 的一种包管理工具，相当于 Redhat Linux(Centos/RHEL/Fedora) 的 <code>yum</code> 或者 Debian Linux(Debian/Ubuntu) 的 <code>apt-get</code>。 <a href="https://brew.sh/" target="_blank" rel="noopener">Homebrew 的官网</a></p>
+<h3 id="Homebrew-安装"><a href="#Homebrew-安装" class="headerlink" title="Homebrew 安装"></a>Homebrew 安装</h3><p>使用官方提供的方法安装 Homebrew</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">/bin/bash -c <span class="string">"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"</span></span><br></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<h3 id="使用-brew-install-出现长时间卡顿怎么办？"><a href="#使用-brew-install-出现长时间卡顿怎么办？" class="headerlink" title="使用 brew install 出现长时间卡顿怎么办？"></a>使用 brew install 出现长时间卡顿怎么办？</h3><p>在国内的网络环境下使用 Homebrew 安装软件的过程中可能会出现长时间的卡在 Updating Homebrew 这个步骤上。<br>例如： 执行 brew install composer</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">➜  ~ brew install composer</span><br><span class="line">Updating Homebrew... <span class="comment"># 如果碰到长时间卡在这里，参考以下 2 种处理方法</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>方法一: 按住 control + c  取消本次更新操作</strong></p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">➜  ~ brew install composer</span><br><span class="line">Updating Homebrew...</span><br><span class="line">^C</span><br></pre></td></tr></table></figure>
+
+<p>按住 control + c 之后命令会显示 ^C, 就表示已经取消 <code>Updating Homebrew</code> 操作，跳过这个步骤去执行我们真正需要的安装操作</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">➜  ~ brew install composer</span><br><span class="line">Updating Homebrew...</span><br><span class="line">^C==&gt; Satisfying dependencies</span><br><span class="line">==&gt; Downloading <span class="symbol">https:</span>/<span class="regexp">/getcomposer.org/download</span><span class="regexp">/1.7.2/composer</span>.phar</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+
+<p><font color=red>PS: 这个办法是临时性的解决方案</font></p>
+<p><strong>方法二： 使用 Alibaba 的 Homebrew 镜像进行加速</strong></p>
+<p>平时我们执行 <code>brew</code> 命令安装软件的时候，跟一下3个仓库有关：</p>
+<ul>
+<li>brew.git</li>
+<li>homoebrew-core.git</li>
+<li>homebrew-bottles.git</li>
+</ul>
+<p>通过更改这 3 个仓库的地址为 Alibaba 提供的地址</p>
+<h4 id="替换-还原-brew-git-仓库地址"><a href="#替换-还原-brew-git-仓库地址" class="headerlink" title="替换/还原 brew.git 仓库地址"></a>替换/还原 brew.git 仓库地址</h4><figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 替换成阿里巴巴的 brew.git 仓库地址:</span></span><br><span class="line">cd <span class="string">"$(brew --repo)"</span></span><br><span class="line">git remote set-url origin <span class="symbol">https:</span>/<span class="regexp">/mirrors.aliyun.com/homebrew</span><span class="regexp">/brew.git</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">#=======================================================</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp"># 还原为官方提供的 brew.git 仓库地址</span></span><br><span class="line"><span class="regexp">cd "$(brew --repo)"</span></span><br><span class="line"><span class="regexp">git remote set-url origin https:/</span><span class="regexp">/github.com/</span>Homebrew/brew.git</span><br></pre></td></tr></table></figure>
+
+<h4 id="替换-还原-homebrew-core-git-仓库地址"><a href="#替换-还原-homebrew-core-git-仓库地址" class="headerlink" title="替换 / 还原 homebrew-core.git 仓库地址"></a>替换 / 还原 homebrew-core.git 仓库地址</h4><figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 替换成阿里巴巴的 homebrew-core.git 仓库地址:</span></span><br><span class="line">cd <span class="string">"$(brew --repo)/Library/Taps/homebrew/homebrew-core"</span></span><br><span class="line">git remote set-url origin <span class="symbol">https:</span>/<span class="regexp">/mirrors.aliyun.com/homebrew</span><span class="regexp">/homebrew-core.git</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">#=======================================================</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp"># 还原为官方提供的 homebrew-core.git 仓库地址</span></span><br><span class="line"><span class="regexp">cd "$(brew --repo)/</span>Library/Taps/homebrew/homebrew-core<span class="string">"</span></span><br><span class="line"><span class="string">git remote set-url origin https://github.com/Homebrew/homebrew-core.git</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="替换-还原-homebrew-bottles-访问地址"><a href="#替换-还原-homebrew-bottles-访问地址" class="headerlink" title="替换 / 还原 homebrew-bottles 访问地址"></a>替换 / 还原 homebrew-bottles 访问地址</h3><p>这个跟你的 macOS 系统使用的 shell 版本有关系<br>所以，先来查看当前使用 shell 版本</p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line">echo $SHELL</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果你的输出结果是 /bin/zsh，参考下方的 zsh 终端操作方式</span></span><br><span class="line"><span class="comment"># 如果你的输出结果是 /bin/bash，参考下方的 bash 终端操作方式</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>zsh 终端操作方式</strong></p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 替换成阿里巴巴的 homebrew-bottles 访问地址:</span></span><br><span class="line">echo <span class="string">'export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.aliyun.com/homebrew/homebrew-bottles'</span> &gt;&gt; ~<span class="regexp">/.zshrc</span></span><br><span class="line"><span class="regexp">source ~/</span>.zshrc</span><br><span class="line"></span><br><span class="line"><span class="comment">#=======================================================</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 还原为官方提供的 homebrew-bottles 访问地址</span></span><br><span class="line">vi ~<span class="regexp">/.zshrc</span></span><br><span class="line"><span class="regexp"># 然后，删除 HOMEBREW_BOTTLE_DOMAIN 这一行配置</span></span><br><span class="line"><span class="regexp">source ~/</span>.zshrc</span><br></pre></td></tr></table></figure>
+
+<p><strong>bash 终端操作方式</strong></p>
+<figure class="highlight ruby"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 替换 homebrew-bottles 访问 URL:</span></span><br><span class="line">echo <span class="string">'export HOMEBREW_BOTTLE_DOMAIN=https://mirrors.aliyun.com/homebrew/homebrew-bottles'</span> &gt;&gt; ~<span class="regexp">/.bash_profile</span></span><br><span class="line"><span class="regexp">source ~/</span>.bash_profile</span><br><span class="line"></span><br><span class="line"><span class="comment">#=======================================================</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 还原为官方提供的 homebrew-bottles 访问地址</span></span><br><span class="line">vi ~<span class="regexp">/.bash_profile</span></span><br><span class="line"><span class="regexp"># 然后，删除 HOMEBREW_BOTTLE_DOMAIN 这一行配置</span></span><br><span class="line"><span class="regexp">source ~/</span>.bash_profile</span><br></pre></td></tr></table></figure>
+]]></content>
+      <categories>
+        <category>工具</category>
+      </categories>
+      <tags>
+        <tag>homebrew</tag>
       </tags>
   </entry>
 </search>
