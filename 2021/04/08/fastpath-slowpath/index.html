@@ -22,23 +22,20 @@
     var CONFIG = {"hostname":"samchiang.cn","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
-  <meta name="description" content="什么是Runtime?Runtime 是由 C、 C++、 汇编共共同组成的 为 iOS 提供运行时功能的一套 API, 其中最主要的就是消息机制。可以查看苹果的官网 Objective-C Runtime Programming Guide">
+  <meta name="description" content="我们再查看 objc4 源码的时候,会看到苹果的大婶们常用的两个宏定义 fastpath 和 slowpath我们来看看具体这两个定义是怎么样子的 12#define fastpath(x) (__builtin_expect(bool(x), 1)) &#x2F;&#x2F; x 大概率为真#define slowpath(x) (__builtin_expect(bool(x), 0)) &#x2F;&#x2F; x 大概率为假">
 <meta property="og:type" content="article">
-<meta property="og:title" content="iOS 开发之 Runtime(一) -- Runtime 初识">
-<meta property="og:url" content="https://samchiang.cn/2020/05/15/iOS%20%E5%BC%80%E5%8F%91%E4%B9%8B%20Runtime(%E4%B8%80)%20--%20Runtime%E5%88%9D%E8%AF%86/index.html">
+<meta property="og:title" content="fastpath &amp; slowpath">
+<meta property="og:url" content="https://samchiang.cn/2021/04/08/fastpath-slowpath/index.html">
 <meta property="og:site_name" content="SamChiang">
-<meta property="og:description" content="什么是Runtime?Runtime 是由 C、 C++、 汇编共共同组成的 为 iOS 提供运行时功能的一套 API, 其中最主要的就是消息机制。可以查看苹果的官网 Objective-C Runtime Programming Guide">
+<meta property="og:description" content="我们再查看 objc4 源码的时候,会看到苹果的大婶们常用的两个宏定义 fastpath 和 slowpath我们来看看具体这两个定义是怎么样子的 12#define fastpath(x) (__builtin_expect(bool(x), 1)) &#x2F;&#x2F; x 大概率为真#define slowpath(x) (__builtin_expect(bool(x), 0)) &#x2F;&#x2F; x 大概率为假">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/Runtime%E5%BA%95%E5%B1%82%E5%BA%93%E5%85%B3%E7%B3%BB.png">
-<meta property="og:image" content="https://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/MainClang-Rumtime.jpg">
-<meta property="article:published_time" content="2020-05-15T07:14:12.000Z">
-<meta property="article:modified_time" content="2020-05-26T04:47:24.718Z">
+<meta property="article:published_time" content="2021-04-08T14:47:50.000Z">
+<meta property="article:modified_time" content="2021-04-08T14:49:18.774Z">
 <meta property="article:author" content="SamChiang">
-<meta property="article:tag" content="runtime">
+<meta property="article:tag" content="objc4">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/Runtime%E5%BA%95%E5%B1%82%E5%BA%93%E5%85%B3%E7%B3%BB.png">
 
-<link rel="canonical" href="https://samchiang.cn/2020/05/15/iOS%20%E5%BC%80%E5%8F%91%E4%B9%8B%20Runtime(%E4%B8%80)%20--%20Runtime%E5%88%9D%E8%AF%86/">
+<link rel="canonical" href="https://samchiang.cn/2021/04/08/fastpath-slowpath/">
 
 
 <script id="page-configurations">
@@ -51,7 +48,7 @@
   };
 </script>
 
-  <title>iOS 开发之 Runtime(一) -- Runtime 初识 | SamChiang</title>
+  <title>fastpath & slowpath | SamChiang</title>
   
 
 
@@ -194,7 +191,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://samchiang.cn/2020/05/15/iOS%20%E5%BC%80%E5%8F%91%E4%B9%8B%20Runtime(%E4%B8%80)%20--%20Runtime%E5%88%9D%E8%AF%86/">
+    <link itemprop="mainEntityOfPage" href="https://samchiang.cn/2021/04/08/fastpath-slowpath/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/%E5%A4%B4%E5%83%8F.png">
@@ -207,7 +204,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          iOS 开发之 Runtime(一) -- Runtime 初识
+          fastpath & slowpath
         </h1>
 
         <div class="post-meta">
@@ -216,16 +213,10 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2020-05-15 15:14:12" itemprop="dateCreated datePublished" datetime="2020-05-15T15:14:12+08:00">2020-05-15</time>
+              <time title="创建时间：2021-04-08 22:47:50 / 修改时间：22:49:18" itemprop="dateCreated datePublished" datetime="2021-04-08T22:47:50+08:00">2021-04-08</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2020-05-26 12:47:24" itemprop="dateModified" datetime="2020-05-26T12:47:24+08:00">2020-05-26</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -249,7 +240,7 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>1.5k</span>
+              <span>1.3k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
@@ -268,39 +259,24 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="什么是Runtime"><a href="#什么是Runtime" class="headerlink" title="什么是Runtime?"></a>什么是Runtime?</h2><p>Runtime 是由 C、 C++、 汇编共共同组成的 为 iOS 提供运行时功能的一套 API, 其中最主要的就是消息机制。<br>可以查看苹果的官网 <a href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008048" target="_blank" rel="noopener">Objective-C Runtime Programming Guide</a></p>
+        <p>我们再查看 <code>objc4</code> 源码的时候,会看到苹果的大婶们常用的两个宏定义 <code>fastpath</code> 和 <code>slowpath</code><br>我们来看看具体这两个定义是怎么样子的</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> fastpath(x) (__builtin_expect(bool(x), 1)) <span class="comment">// x 大概率为真</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> slowpath(x) (__builtin_expect(bool(x), 0)) <span class="comment">// x 大概率为假</span></span></span><br></pre></td></tr></table></figure>
+
 <a id="more"></a>
-<h3 id="运行时释义"><a href="#运行时释义" class="headerlink" title="运行时释义"></a>运行时释义</h3><ul>
-<li>运行时，是在代码运行的时候，将对象等装载到内存中，通过方法名动态查找实现的函数。</li>
-<li>对比 C，C 语言在函数编译阶段会决定调用哪个函数，Rumtime 是在运行时根据函数的名称查找需要调用的哪个函数。</li>
-</ul>
-<h3 id="编译时释义"><a href="#编译时释义" class="headerlink" title="编译时释义"></a>编译时释义</h3><p>编译时就是在编译器，将高级语言编译成可以被计算机识别的机器语言。</p>
-<h3 id="Runtime-的底层库关系"><a href="#Runtime-的底层库关系" class="headerlink" title="Runtime 的底层库关系"></a>Runtime 的底层库关系</h3><p><img src="https://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/Runtime%E5%BA%95%E5%B1%82%E5%BA%93%E5%85%B3%E7%B3%BB.png" alt="Runtime 底层库的关系"></p>
-<h3 id="Runtime-解析"><a href="#Runtime-解析" class="headerlink" title="Runtime 解析"></a>Runtime 解析</h3><p>简单举例</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="meta">#import <span class="meta-string">&lt;Foundation/Foundation.h&gt;</span></span></span><br><span class="line"><span class="meta">#import <span class="meta-string">"SCPerson.h"</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> sayHello() &#123;</span><br><span class="line">    <span class="built_in">NSLog</span>(<span class="string">@"%s"</span>, __func__);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">int</span> main(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[]) &#123;</span><br><span class="line">    <span class="keyword">@autoreleasepool</span> &#123;</span><br><span class="line">        <span class="comment">// insert code here...</span></span><br><span class="line">        SCPerson *person = [[SCPerson alloc] init];</span><br><span class="line">        [person sayHello];</span><br><span class="line">        sayHello();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>大婶们写这个到底有什么意义呢？我们来看看这两个宏定义的意义</p>
+<blockquote>
+<p><code>__builtin_expect(EXP, N)</code> 这个指令是 <code>GCC</code> <strong>作用是允许程序员将最有可能执行的分支告诉编译器</strong>。 它的意思是 <code>EXP == N</code> 的概率很大。</p>
+</blockquote>
+<p>一般情况下，我们都是如何使用它的呢？</p>
+<h3 id="builtin-expect-EXP-N-的使用"><a href="#builtin-expect-EXP-N-的使用" class="headerlink" title="__builtin_expect(EXP, N) 的使用"></a><code>__builtin_expect(EXP, N)</code> 的使用</h3><p>既然我们知道了 <code>__builtin_expect(EXP, N)</code> 的作用，我们可以做一个假设。 比如我现在有个箱子，箱子里面有5个球，4个是蓝色的，1个是红色的。我们知道大概率下。我们随机抽取的球的颜色一定是蓝色的。这样我们就可以用这个指令，来减少指令跳转带来的性能下降</p>
+<figure class="highlight objc"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span> likely(x) __builtin_expect(!!(x), 1)</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">define</span> unlikely(x) __builtin_expect(!!(x), 0)</span></span><br><span class="line"></span><br><span class="line">- (<span class="keyword">void</span>)viewDidLoad &#123;</span><br><span class="line">    [<span class="keyword">super</span> viewDidLoad];</span><br><span class="line">    <span class="comment">// Do any additional setup after loading the view.</span></span><br><span class="line">    <span class="built_in">NSArray</span> *balls = [[<span class="built_in">NSArray</span> alloc] initWithObjects:<span class="string">@"Blue"</span>, <span class="string">@"Blue"</span>, <span class="string">@"Blue"</span>, <span class="string">@"Blue"</span>, <span class="string">@"Red"</span>, <span class="literal">nil</span>];</span><br><span class="line">    <span class="keyword">int</span> index      = arc4random() % <span class="number">5</span>;</span><br><span class="line">    <span class="built_in">NSString</span> *resultStr;</span><br><span class="line">    <span class="keyword">if</span> (likely([[balls objectAtIndex: index] isEqualToString: <span class="string">@"Blue"</span>])) &#123;</span><br><span class="line">        resultStr = <span class="string">@"Blue"</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        resultStr = <span class="string">@"Red"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="built_in">SCNSLog</span>(<span class="string">@"%@"</span>, resultStr);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <blockquote>
-<p>在 SCPerson.m 中 没有实现 <code>sayHello</code>, 在编译时，这个并不会报错，但是在运行时，会因为找不到 <code>sayHello</code> 发放报错.</p>
+<p>实际上，我们可以使用likely/unlikely宏来预测 x 的结果，然后通知编译器在编译时优化这个分支的汇编代码。</p>
 </blockquote>
-<p>利用 <code>clang</code> 来编译 <code>main.m</code> 文件，来查看底层代码</p>
-<figure class="highlight ruby"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 这个是简单的编译</span></span><br><span class="line">clang -rewrite-objc main.m -o main.cpp </span><br><span class="line"></span><br><span class="line"><span class="comment"># 这种编译方式可以,减少警告</span></span><br><span class="line">xcrun -sdk iphoneos clang -arch arm64 -rewrite main.m -o main.c++</span><br></pre></td></tr></table></figure>
-<p>我们可以看下编译过后 C 代码如下：</p>
-<p><img src="https://sam-chiang-blog.oss-cn-beijing.aliyuncs.com/MainClang-Rumtime.jpg" alt="Main-Clang-Rumtime"></p>
-<p>其中</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">(<span class="keyword">int</span> argc, <span class="keyword">const</span> <span class="keyword">char</span> * argv[])</span> </span>&#123;</span><br><span class="line">    <span class="comment">/* @autoreleasepool */</span> &#123; __AtAutoreleasePool __autoreleasepool; </span><br><span class="line">        SCPerson *person = ((SCPerson *(*)(id, SEL))(<span class="keyword">void</span> *)objc_msgSend)((id)((SCPerson *(*)(id, SEL))(<span class="keyword">void</span> *)objc_msgSend)((id)objc_getClass(<span class="string">"SCPerson"</span>), sel_registerName(<span class="string">"alloc"</span>)), sel_registerName(<span class="string">"init"</span>));</span><br><span class="line">        ((<span class="keyword">void</span> (*)(id, SEL))(<span class="keyword">void</span> *)objc_msgSend)((id)person, sel_registerName(<span class="string">"sayHello"</span>));</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>可以看出 Objective-C 调用方法的本质是通过 <code>objc_messageSend</code> 通过方法名 <code>sel_registerName</code>, 调用对象的实例方法。所以我们可以看出<code>OC 方法的本质</code>其实就是发送消息</p>
-<blockquote>
-<p><code>(id)objc_getClass(&quot;SCPerson&quot;)</code> 这个就是消息接受者<br><code>sel_registerName(&quot;alloc&quot;)</code> 这个就是方法编号</p>
-</blockquote>
-<p>通过</p>
-<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span> <span class="title">objc_object</span> <span class="title">SCPerson</span>;</span></span><br></pre></td></tr></table></figure>
-<p>可以看出 <code>OC 对象</code>的本质，其实是一个结构体.</p>
-<p><strong>带着问题看本质</strong></p>
-<ul>
-<li>如何通过方法编号，查询到方法</li>
-</ul>
-<p>为了更方便我们查看方法的本质，我们最好先搭建一套  的环境</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><code>__builtin_expect()</code> 是 <code>GCC (version &gt;= 2.96）</code>提供给程序员使用的，目的是将“分支转移”的信息提供给编译器，这样编译器可以对代码进行优化，以减少指令跳转带来的性能下降。<br><code>__builtin_expect((x),1)</code> 表示 x 的值为真的可能性更大；<br><code>__builtin_expect((x),0)</code> 表示 x 的值为假的可能性更大。<br>也就是说，使用 <code>likely()</code>，执行 if 后面的语句的机会更大，使用 <code>unlikely()</code>，执行 else 后面的语句的机会更大。通过这种方式，编译器在编译过程中，会将可能性更大的代码紧跟着起面的代码，从而减少指令跳转带来的性能上的下降。</p>
+<p><strong>我们可以查看 <a href="https://turingsec.github.io/builtin_expect/" target="_blank" rel="noopener">__builtin_expect的使用</a>这边文章，有更为详细的描述</strong></p>
 
     </div>
     
@@ -325,7 +301,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="https://samchiang.cn/2020/05/15/iOS%20%E5%BC%80%E5%8F%91%E4%B9%8B%20Runtime(%E4%B8%80)%20--%20Runtime%E5%88%9D%E8%AF%86/" title="iOS 开发之 Runtime(一) -- Runtime 初识">https://samchiang.cn/2020/05/15/iOS 开发之 Runtime(一) -- Runtime初识/</a>
+    <a href="https://samchiang.cn/2021/04/08/fastpath-slowpath/" title="fastpath &amp; slowpath">https://samchiang.cn/2021/04/08/fastpath-slowpath/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
@@ -336,7 +312,7 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/runtime/" rel="tag"><i class="fa fa-tag"></i> runtime</a>
+              <a href="/tags/objc4/" rel="tag"><i class="fa fa-tag"></i> objc4</a>
           </div>
 
         
@@ -345,13 +321,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2020/05/08/Mach-O-class-dump/" rel="prev" title="iOS 逆向工具 class-dump">
-      <i class="fa fa-chevron-left"></i> iOS 逆向工具 class-dump
+    <a href="/2021/04/07/%E7%B1%BB%E5%8E%9F%E7%90%86%E6%8E%A2%E7%B4%A2-1/" rel="prev" title="类原理探索(1)">
+      <i class="fa fa-chevron-left"></i> 类原理探索(1)
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2020/05/18/objc4%E6%BA%90%E7%A0%81%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="next" title="Objc4源码环境搭建">
-      Objc4源码环境搭建 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -364,6 +337,7 @@
 
           </div>
           
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -410,7 +384,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是Runtime"><span class="nav-number">1.</span> <span class="nav-text">什么是Runtime?</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#运行时释义"><span class="nav-number">1.1.</span> <span class="nav-text">运行时释义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#编译时释义"><span class="nav-number">1.2.</span> <span class="nav-text">编译时释义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Runtime-的底层库关系"><span class="nav-number">1.3.</span> <span class="nav-text">Runtime 的底层库关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Runtime-解析"><span class="nav-number">1.4.</span> <span class="nav-text">Runtime 解析</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#builtin-expect-EXP-N-的使用"><span class="nav-number">1.</span> <span class="nav-text">__builtin_expect(EXP, N) 的使用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number"></span> <span class="nav-text">总结</span></a></div>
       </div>
       <!--/noindex-->
 
@@ -565,6 +539,25 @@
 
   
 
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : '5229b624ea3086720dc4',
+      clientSecret: '0c5c59024b1a0e04406dc3a8cb405d6db3fbb805',
+      repo        : 'BlogComments',
+      owner       : 'ChiangSam',
+      admin       : ['ChiangSam'],
+      id          : '3609c23f101b96144ff120aa4bc312ae',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
 
 </body>
 </html>
